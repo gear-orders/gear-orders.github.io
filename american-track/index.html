@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>American Track Gift Picks</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#f1efe9; --surface:#fbfaf7; --surface-2:#e8e4da; --ink:#1f1c18; --muted:#625b51;
+  --line:#d6d0c3; --accent:#8a3b12; --accent-ink:#fff; --ok:#2f6b2a; --ok-bg:#e4efdf;
+  --warn:#8a5a0c; --warn-bg:#f6ead3; --well:#ffffff; --focus:#2f6fd6;
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#16140f; --surface:#1f1c17; --surface-2:#2a261f; --ink:#ece7dc; --muted:#a59d8f;
+    --line:#3a342b; --accent:#e0874f; --accent-ink:#1a120c; --ok:#8fcf86; --ok-bg:#1f2e1c;
+    --warn:#f0bf6b; --warn-bg:#3a2c14; --well:#f4f2ee; --focus:#7fb0ff; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16140f; --surface:#1f1c17; --surface-2:#2a261f; --ink:#ece7dc; --muted:#a59d8f;
+  --line:#3a342b; --accent:#e0874f; --accent-ink:#1a120c; --ok:#8fcf86; --ok-bg:#1f2e1c;
+  --warn:#f0bf6b; --warn-bg:#3a2c14; --well:#f4f2ee; --focus:#7fb0ff; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.top{border-bottom:1px solid var(--line);background:var(--surface)}
+header.top .wrap{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+header.top img{width:128px;height:auto;background:#fff;border-radius:8px;padding:6px;flex:none}
+@media (max-width:600px){header.top img{width:88px}}
+header.top .who{font-size:13px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(30px,5vw,44px);line-height:1;margin:2px 0 0;letter-spacing:.01em}
+.intro{padding:22px 0 8px;max-width:760px}
+.intro p{margin:0 0 10px;color:var(--muted)}
+.rule{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 0}
+.rule span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.layout{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;padding:14px 0 48px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+h2{font-family:var(--f-display);font-weight:700;font-size:26px;margin:18px 0 4px;letter-spacing:.02em}
+h2 small{font-family:var(--f-body);font-size:14px;font-weight:600;color:var(--muted);letter-spacing:0;margin-left:8px}
+.groupnote{margin:0 0 12px;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.well{background:var(--well);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;position:relative}
+.well img{width:100%;height:100%;object-fit:contain}
+.well .ph{color:#7a7266;text-align:center;padding:20px;font-size:14px}
+.well .ph svg{width:72px;height:72px;display:block;margin:0 auto 8px;opacity:.55}
+.badge{position:absolute;top:10px;left:10px;background:var(--ink);color:var(--bg);font-size:12px;font-weight:700;border-radius:6px;padding:3px 8px;letter-spacing:.03em}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.name{font-weight:700;font-size:17px;margin:0}
+.desc{font-size:14px;color:var(--muted);margin:0}
+.more{font-size:13px;color:var(--accent);background:none;border:0;padding:0;text-align:left;cursor:pointer;text-decoration:underline}
+.colorlabel{font-size:13px;color:var(--muted)}
+.colorlabel b{color:var(--ink)}
+.swatches{display:flex;flex-wrap:wrap;gap:6px}
+.sw{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0;position:relative}
+.sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)}
+.sizes{display:flex;flex-wrap:wrap;gap:6px}
+.szb{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:5px 9px;font-size:13px;font-weight:600;cursor:pointer}
+.szb[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sw.holo{background:linear-gradient(135deg,#f3d7f0,#c9e3f7,#e8f0c8,#f6cfe0)!important}
+.add{margin-top:auto;border:0;border-radius:8px;padding:10px 12px;font-weight:700;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.add:disabled{background:var(--surface-2);color:var(--muted);cursor:not-allowed}
+.why{font-size:12px;color:var(--muted);min-height:16px;margin:0}
+aside.panel{position:sticky;top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+@media (max-width:900px){aside.panel{position:static}}
+.panel h3{font-family:var(--f-display);font-size:24px;margin:0 0 8px;letter-spacing:.02em}
+.meter{display:flex;gap:6px;margin:6px 0 4px}
+.meter i{flex:1;height:14px;border-radius:4px;background:var(--surface-2);border:1px solid var(--line)}
+.meter i.on{background:var(--accent);border-color:var(--accent)}
+.meterlabel{font-size:14px;color:var(--muted);margin:0 0 12px}
+.picks{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:8px}
+.picks li{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg)}
+.picks img{width:44px;height:44px;object-fit:contain;background:var(--well);border-radius:6px}
+.picks .t{flex:1;font-size:14px;line-height:1.3}
+.picks .t b{display:block}
+.rm{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer}
+.empty{font-size:14px;color:var(--muted);border:1px dashed var(--line);border-radius:8px;padding:12px;margin:0 0 12px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+label.f{display:block;font-weight:600;font-size:14px;margin:0 0 4px}
+input.txt{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.submit{width:100%;margin-top:12px;border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px;background:var(--ok);color:#fff;cursor:pointer;text-align:center;display:block;text-decoration:none}
+:root[data-theme="dark"] .submit{color:#10200e}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .submit{color:#10200e}}
+.submit[aria-disabled="true"]{background:var(--surface-2);color:var(--muted);cursor:not-allowed;pointer-events:none}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+.done{display:none;margin-top:12px;background:var(--ok-bg);border-radius:8px;padding:12px;font-size:14px}
+.done.show{display:block}
+.done pre{white-space:pre-wrap;font-family:inherit;margin:6px 0;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px}
+.copy{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 10px;font-size:13px;cursor:pointer}
+.preview{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:13px;margin:10px 0 0}
+.mbar{display:none}
+@media (max-width:900px){.mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;gap:10px;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-top:1px solid var(--line);font-size:14px}
+.mbar a{background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:8px 12px;font-weight:700;text-decoration:none}
+body{padding-bottom:64px}}
+footer{border-top:1px solid var(--line);padding:16px 0 28px;color:var(--muted);font-size:13px}
+dialog{border:0;border-radius:12px;padding:0;max-width:min(92vw,900px);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog img{display:block;width:100%;height:auto;background:#fff}
+dialog .bar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <img src="img/at-logo.png" alt="American Track logo">
+  <div><div class="who">American Track team gear</div><h1>Pick your American Track gear</h1></div>
+</div></header>
+
+<main class="wrap">
+  <section class="intro">
+    <p>Everything below is laser engraved with the American Track logo (pictures are examples). Pick what you want, choose a color, add your name, and submit. That's it.</p>
+    <div class="rule"><span>You have 2 points</span><span>Group A item = 2 points</span><span>Group B item = 1 point</span></div>
+    <p style="margin-top:10px">So you can take <b>one</b> Group A item, or <b>two</b> Group B items (two of the same is fine).</p>
+  </section>
+
+  <div class="layout">
+    <div id="catalog"></div>
+
+    <aside class="panel" aria-labelledby="ph">
+      <h3 id="ph">Your picks</h3>
+      <div class="meter" aria-hidden="true"><i></i><i></i></div>
+      <p class="meterlabel" id="meterlabel">0 of 2 points used</p>
+      <ul class="picks" id="picks"></ul>
+      <p class="empty" id="empty">Nothing picked yet. Choose a color on any item and tap Add.</p>
+      <div class="names">
+        <div><label class="f" for="fn">First name</label>
+        <input class="txt" id="fn" autocomplete="given-name" maxlength="40" placeholder="e.g. Pat" required></div>
+        <div><label class="f" for="ln">Last name</label>
+        <input class="txt" id="ln" autocomplete="family-name" maxlength="40" placeholder="e.g. Morgan" required></div>
+      </div>
+      <a class="submit" id="submit" href="#" target="_blank" rel="noopener" aria-disabled="true">Submit my picks</a>
+      <p class="hint" id="hint">Add at least one item, plus your first and last name, to submit.</p>
+      <div class="done" id="done">
+        <span id="donemsg"><b>Almost done.</b> A Microsoft Form just opened in a new tab with your name and picks filled in. Press <b>Submit</b> there to finish.</span>
+        <pre id="summary"></pre>
+        <button class="copy" id="copy" type="button">Copy my picks</button>
+      </div>
+      <p class="preview" id="previewnote" hidden>Preview only: the order form isn't connected yet, so Submit shows your picks here instead of sending them.</p>
+    </aside>
+  </div>
+</main>
+
+<footer><div class="wrap">Questions about an item? Ask your American Track coordinator.</div></footer>
+
+<div class="mbar"><span id="mbart">0 of 2 points used</span><a href="#ph">Review and submit</a></div>
+<dialog id="dlg"><div class="bar"><b id="dlgt"></b><button class="copy" id="dlgx" type="button">Close</button></div><img id="dlgi" alt=""></dialog>
+
+<script>
+(function(){
+/* ===== Settings Jim (or Claude) changes per client ===== */
+// Paste the Microsoft Forms pre-filled link here. Make it with these placeholder answers:
+// XNAMEX in the name question, XPICK1X in the first pick question, XPICK2X in the second.
+var FORM_LINK = "";
+var BUDGET = 2;
+var IMG = "img/";
+var PH_TUMBLER = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 10h28l-3 46H21z"/><path d="M16 10h32"/></svg>';
+var PH_KNIFE = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 40 L44 12 c6 -2 10 2 8 8 L24 44z"/><path d="M24 44 l-6 10 -8 -2 4 -10"/></svg>';
+var ITEMS = [
+  {id:"rtic", group:"A", name:"RTIC 20 oz Travel Tumbler", desc:"Insulated stainless tumbler with handle, laser engraved.",
+   colors:[["Beach","#d6c4a4","rtic-beach"],["Berry Jam","#6e2a6b","rtic-berryjam"],["Black","#1f1f1f","rtic-black"],["Chocolate Brown","#4b2624","rtic-chocolatebrown"],["Flag Red","#c4232f","rtic-chocolateflagred"],["Lavender Glitter","#cdb5e3","rtic-chocolatelavenderglitter"],["Cobalt","#2a4fa8","rtic-cobalt"],["Cool Grey","#dcdcdc","rtic-coolgrey"],["Periwinkle","#9aa3d6","rtic-coolperiwinkle"],["Pine Tree","#1f6a45","rtic-coolpinetree"],["Denim","#79a7d6","rtic-denim"],["Graphite","#4b4b4d","rtic-graphite"],["Navy","#1d2a44","rtic-navy"],["Olive","#6b6c4a","rtic-olive"],["Pale Pink","#efc6d0","rtic-palepink"],["Persimmon","#e8432f","rtic-persimmon"],["White","#f4f4f4","rtic-white"]]},
+  {id:"ammo", group:"A", name:".50 Cal Ammo Can", desc:"Steel ammo can, engraved on the side.",
+   colors:[["Black","#1f1f1f","ammo-black"],["Green","#4c5a3c","ammo-green"]]},
+  {id:"knife", group:"B", name:"The Beast Pocket Knife", desc:"Spring-assist folding knife with 440 stainless blade, safety liner lock and belt clip. 7.75 in long, 1 in wide, 0.5 lb. Seatbelt/line cutter, window breaker and bottle opener. Comes in a window display box.",
+   sheetFor:{"Rosewood":"knife-sheet-rosewood","Black Anodized Aluminum":"knife-sheet-black"},
+   colors:[["Black Anodized Aluminum","#262626","knife-black"],["Rosewood","#8a3a22","knife-rosewood"]]},
+  {id:"box", group:"B", name:"Wood Memory Box", desc:"Medium, dark walnut, 8.5 x 6 x 3 in. Felt lined, hinged lid, comes in a gift box.",
+   more:["Memory box details","memorybox-sheet"], colors:[["Dark Walnut","#5a4636","memorybox"]]},
+  {id:"tumbler", group:"B", name:"Engraved Tumbler (20 oz)", desc:"20 oz insulated stainless tumbler, no handle, with lid and straw, powder coated, laser engraved with the logo.",
+   colors:[["Black","#1b1e26","tmb-20-black"],["White","#ecebf1","tmb-20-white"],["Blue","#173a96","tmb-20-blue"],["Light Blue","#74b4ec","tmb-20-lightblue"],["Navy","#2a3463","tmb-20-navy"],["Maroon","#74162b","tmb-20-maroon"],["Red","#a3122a","tmb-20-red"],["Pink","#e660ab","tmb-20-pink"],["Teal","#5ccfe3","tmb-20-teal"],["Purple","#50388a","tmb-20-purple"],["Green","#34503f","tmb-20-green"],["Yellow","#f3b51e","tmb-20-yellow"],["Orange","#e97f2e","tmb-20-orange"]]},
+  {id:"journal", group:"B", name:"Leather-Feel Notebook Journal", desc:"8.75 x 5.5 in, 240 lined pages, refillable, black gift box. Engraved with the logo; black on every color except black, which engraves silver.",
+   more:["All 12 journal colors","journal-colors"],
+   colors:[["1 White","#e6e9e2","jrn-01"],["2 Metallic Gold","#d1b776","jrn-02"],["3 Holographic","#b9bcca","jrn-03","holo"],["4 Rawhide","#c5722d","jrn-04"],["5 Navy","#35568a","jrn-05"],["6 Metallic Silver","#bcbcbe","jrn-06"],["7 Brown","#915435","jrn-07"],["8 Red","#8b3229","jrn-08"],["9 Gray","#737569","jrn-09"],["10 Pink","#c9556c","jrn-10"],["11 Black","#28292b","jrn-11"],["12 Sage","#52774c","jrn-12"]]}
+];
+/* ===================================================== */
+
+var picks=[], sel={}, sz={};
+function cols(it){return it.sizes?it.sizes[sz[it.id]||0].colors:it.colors}
+function sizeLabel(it){return it.sizes?it.sizes[sz[it.id]||0].label:""}
+ITEMS.forEach(function(it){if(cols(it).length===1)sel[it.id]=0});
+function pts(g){return g==="A"?2:1}
+function used(){return picks.reduce(function(s,p){return s+pts(p.group)},0)}
+function el(t,a,h){var e=document.createElement(t);if(a)for(var k in a){if(k==="class")e.className=a[k];else e.setAttribute(k,a[k])}if(h!=null)e.innerHTML=h;return e}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function defIdx(it){var cc=cols(it),k;for(var n=0;n<cc.length;n++){if(/navy/i.test(cc[n][0]))return n}for(n=0;n<cc.length;n++){if(/cobalt|blue/i.test(cc[n][0])&&!/light/i.test(cc[n][0]))return n}return 0}
+function imgFor(it,ci){var cc=cols(it);if(ci==null)ci=defIdx(it);var c=cc[ci];if(c&&c[2]&&true)return IMG+c[2]+".jpg";if(it.img)return IMG+it.img+".jpg";if(cc[0]&&cc[0][2])return IMG+cc[0][2]+".jpg";return null}
+
+function render(){
+  var cat=document.getElementById("catalog");cat.innerHTML="";
+  [["A","Group A","2 points each, pick one"],["B","Group B","1 point each, pick two"]].forEach(function(g){
+    cat.appendChild(el("h2",null,g[1]+'<small>'+g[2]+'</small>'));
+    var grid=el("div",{"class":"grid"});
+    ITEMS.filter(function(i){return i.group===g[0]}).forEach(function(it){grid.appendChild(card(it))});
+    cat.appendChild(grid);
+  });
+  renderPanel();
+}
+function card(it){
+  var c=el("article",{"class":"card"});
+  var w=el("div",{"class":"well"});
+  var src=imgFor(it,sel[it.id]);var shown=sel[it.id]!=null?sel[it.id]:defIdx(it);
+  if(src){var im=el("img",{src:src,alt:it.name+(cols(it)[sel[it.id]]?", "+cols(it)[sel[it.id]][0]:""),loading:"lazy"});w.appendChild(im)}
+  else w.appendChild(el("div",{"class":"ph"},(it.ph||"")+"Photo coming soon"));
+  w.appendChild(el("span",{"class":"badge"},"GROUP "+it.group+" &middot; "+pts(it.group)+" PT"+(pts(it.group)>1?"S":"")));
+  c.appendChild(w);
+  var b=el("div",{"class":"body"});
+  b.appendChild(el("h4",{"class":"name"},esc(it.name)));
+  b.appendChild(el("p",{"class":"desc"},esc(it.desc)));
+  if(it.more){var m=el("button",{"class":"more",type:"button"},esc(it.more[0]));m.onclick=function(){openDlg(it.more[0],IMG+it.more[1]+".jpg")};b.appendChild(m)}
+  if(it.sheetFor){var m2=el("button",{"class":"more",type:"button"},"Knife details and specs");m2.onclick=function(){var c=cols(it)[sel[it.id]],k=c?c[0]:"Rosewood";openDlg(it.name+" - "+k,IMG+it.sheetFor[k]+".jpg")};b.appendChild(m2)}
+  if(it.sizes){
+    b.appendChild(el("div",{"class":"colorlabel"},"Size: <b>"+esc(sizeLabel(it))+"</b>"));
+    var sg=el("div",{"class":"sizes",role:"group","aria-label":it.name+" sizes"});
+    it.sizes.forEach(function(s,i){var sb=el("button",{"class":"szb",type:"button","aria-pressed":String((sz[it.id]||0)===i)},esc(s.label));sb.onclick=function(){sz[it.id]=i;if(sel[it.id]!=null&&!cols(it)[sel[it.id]])sel[it.id]=null;render()};sg.appendChild(sb)});
+    b.appendChild(sg);
+  }
+  var CC=cols(it);
+  if(CC.length){
+    var ci=sel[it.id];
+    b.appendChild(el("div",{"class":"colorlabel"},"Color: <b>"+(ci==null?"choose one":esc(CC[ci][0]))+"</b>"));
+    var sw=el("div",{"class":"swatches",role:"group","aria-label":it.name+" colors"});
+    CC.forEach(function(col,i){
+      var s=el("button",{"class":"sw"+(col[3]==="holo"?" holo":""),type:"button",title:col[0],"aria-label":col[0],"aria-pressed":String(ci===i)});
+      s.style.background=col[1];
+      s.onclick=function(){sel[it.id]=i;render()};
+      sw.appendChild(s);
+    });
+    b.appendChild(sw);
+  }
+  var need=pts(it.group), left=BUDGET-used();
+  var add=el("button",{"class":"add",type:"button"},"Add");
+  var why="";
+  if(need>left){add.disabled=true;why=left===0?"You've used both points.":"Needs 2 points; you have "+left+" left."}
+  else if(CC.length&&sel[it.id]==null){add.disabled=true;why="Pick a color first."}
+  add.onclick=function(){
+    var ci=sel[it.id];
+    picks.push({id:it.id,group:it.group,name:it.name+(it.sizes?" "+sizeLabel(it):""),color:CC.length?CC[ci][0]:"",img:imgFor(it,ci)});
+    render();
+  };
+  b.appendChild(add);
+  b.appendChild(el("p",{"class":"why"},why));
+  c.appendChild(b);
+  return c;
+}
+function label(p){return p.name+(p.color?" - "+p.color:"")+" (Group "+p.group+")"}
+function renderPanel(){
+  var u=used(), m=document.querySelectorAll(".meter i");
+  m[0].className=u>=1?"on":"";m[1].className=u>=2?"on":"";
+  document.getElementById("meterlabel").textContent=u+" of "+BUDGET+" points used";document.getElementById("mbart").textContent=u+" of "+BUDGET+" points used";
+  var ul=document.getElementById("picks");ul.innerHTML="";
+  document.getElementById("empty").style.display=picks.length?"none":"block";
+  picks.forEach(function(p,i){
+    var li=el("li");
+    if(p.img)li.appendChild(el("img",{src:p.img,alt:""}));
+    li.appendChild(el("div",{"class":"t"},"<b>"+esc(p.name)+"</b>"+(p.color?esc(p.color)+" &middot; ":"")+"Group "+p.group));
+    var r=el("button",{"class":"rm",type:"button","aria-label":"Remove "+p.name},"Remove");
+    r.onclick=function(){picks.splice(i,1);render()};
+    li.appendChild(r);ul.appendChild(li);
+  });
+  updateSubmit();
+}
+function clean(id){return document.getElementById(id).value.trim().replace(/\s+/g," ")}
+function letters(s){return (s.match(/[A-Za-z\u00C0-\u024F]/g)||[]).length}
+function nameOk(){return letters(clean("fn"))>=2&&letters(clean("ln"))>=2}
+function nameVal(){return clean("fn")+" "+clean("ln")}
+function updateSubmit(){
+  var s=document.getElementById("submit"), h=document.getElementById("hint");
+  var ok=picks.length>0&&nameOk();
+  s.setAttribute("aria-disabled",String(!ok));
+  if(!ok){h.textContent=!picks.length?"Add at least one item, plus your first and last name, to submit.":(letters(clean("fn"))<2?"Enter your first name (at least 2 letters).":"Enter your last name (at least 2 letters, no initials).");s.href="#";return}
+  h.textContent=used()<BUDGET?"You still have 1 point left. You can add another Group B item, or submit as is.":"Ready when you are.";
+  if(FORM_LINK.indexOf("XNAMEX")>-1&&FORM_LINK.indexOf("http")===0){
+    s.href=FORM_LINK.replace("XNAMEX",encodeURIComponent(nameVal()))
+      .replace("XPICK1X",encodeURIComponent(picks[0]?label(picks[0]):"(none)"))
+      .replace("XPICK2X",encodeURIComponent(picks[1]?label(picks[1]):"(none)"));
+  } else s.href="#";
+}
+function summary(){return "Name: "+nameVal()+"\nPick 1: "+(picks[0]?label(picks[0]):"(none)")+"\nPick 2: "+(picks[1]?label(picks[1]):"(none)")}
+document.getElementById("fn").addEventListener("input",updateSubmit);document.getElementById("ln").addEventListener("input",updateSubmit);
+document.getElementById("submit").addEventListener("click",function(e){
+  if(this.getAttribute("aria-disabled")==="true"){e.preventDefault();return}
+  if(this.getAttribute("href")==="#"){e.preventDefault();document.getElementById("previewnote").hidden=false;document.getElementById("donemsg").innerHTML="<b>Preview:</b> here is what would be sent.";}
+  document.getElementById("summary").textContent=summary();
+  document.getElementById("done").classList.add("show");
+});
+document.getElementById("copy").onclick=function(){
+  var t=summary(),b=this;
+  try{navigator.clipboard.writeText(t).then(function(){b.textContent="Copied"},function(){b.textContent="Select the text above to copy"})}catch(e){b.textContent="Select the text above to copy"}
+};
+var dlg=document.getElementById("dlg");
+function openDlg(t,src){document.getElementById("dlgt").textContent=t;document.getElementById("dlgi").src=src;document.getElementById("dlgi").alt=t;if(dlg.showModal)dlg.showModal();else window.open(src)}
+document.getElementById("dlgx").onclick=function(){dlg.close()};
+dlg.addEventListener("click",function(e){if(e.target===dlg)dlg.close()});
+if(!(FORM_LINK.indexOf("http")===0))document.getElementById("previewnote").hidden=false;
+render();
+})();
+</script>
+</body>
+</html>
