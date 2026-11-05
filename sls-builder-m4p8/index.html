@@ -245,7 +245,8 @@ footer img{width:64px;height:auto}
     </section>
 
     <section class="step" aria-labelledby="s4">
-      <div class="stephead"><span class="num">4</span><h2 id="s4">Extras (optional)</h2></div>
+      <div class="stephead"><span class="num">4</span><h2 id="s4">Shipping and extras</h2></div>
+      <p class="note">One price covers everything: the gift, logo engraving, packing and shipping. Pick where it ships and add any extras.</p>
       <div class="addons" id="addons"></div>
     </section>
   </div>
@@ -255,7 +256,7 @@ footer img{width:64px;height:auto}
     <div class="row"><span>Tier</span><b id="rtier"></b></div>
     <div class="row"><span>Format</span><b id="rmode"></b></div>
     <div class="row"><span>Items offered</span><b id="ritems"></b></div>
-    <div class="pp"><small>Per person, up to</small><span class="big" id="rpp">$0</span><small id="rrange"></small></div>
+    <div class="pp"><small>All-in price per person, up to</small><span class="big" id="rpp">$0</span><small id="rrange"></small></div>
     <p class="flag" id="rflag"></p>
     <div><label class="f" for="hc">How many people?</label><input class="txt" id="hc" type="number" min="1" max="5000" value="40" inputmode="numeric"></div>
     <div class="row"><span>Estimated total</span><b class="total" id="rtotal">$0</b></div>
@@ -263,7 +264,7 @@ footer img{width:64px;height:auto}
     <button class="ghost" type="button" id="copy">Copy this plan to send us</button>
     <button class="ghost" type="button" id="share">Copy a link to this plan</button>
     <p class="copied" id="copied" aria-live="polite"></p>
-    <p class="demonote">Demo estimates only. The real quote depends on your logo, quantities and shipping (one office or each home). Nothing is engraved until you approve a digital proof.</p>
+    <p class="demonote">Demo estimates only. The all-in price includes the gift, logo engraving, packing and shipping. Your real quote depends on your logo and quantities. Nothing is engraved until you approve a digital proof.</p>
   </aside>
  </div>
 </main>
@@ -293,7 +294,7 @@ footer img{width:64px;height:auto}
 
 <footer><div class="wrap">
   <img src="sw-badge.png" alt="Smoky Woods badge">
-  <span>Smoky Woods &times; Sassy Little Southern. Sample page for discussion; items, prices and dates are demo estimates, not a quote.</span>
+  <span>Smoky Woods &times; Sassy Little Southern. Sample page for discussion; items, prices, shipping and dates are demo estimates, not a quote.</span>
 </div></footer>
 
 <div class="mbar"><span id="mbart">$0 per person</span><a href="#panel">Estimate</a></div>
@@ -424,12 +425,13 @@ var PRESET={
  100:{ab:[["sign","ammo","memory","charcuterie"],["breakable","logo12","sampler"]],one:["charcuterie","memory","ammo","endgrain","crate"],box:["charcuterie","sampler","bar"]},
  150:{ab:[["endgrain","charcuterie","memory","ammo"],["breakable","logo12","sampler","tray"]],one:["endgrain","charcuterie","memory","ammo","crate"],box:["endgrain","tray"]}
 };
+var SHIP={office:{n:"Ship to one office",d:"Everything arrives together at one address. You hand them out.",p:3},home:{n:"Ship to each person's home",d:"Each person gets their own box at their door. Good for remote teams.",p:12}};
 var ADDONS=[
  {id:"name",n:"Each person's name engraved too",d:"Their name goes on the item along with your logo.",p:4},
  {id:"gbox",n:"Gift box with your logo card",d:"Everything packed in one kraft gift box with a printed logo card.",p:4},
  {id:"note",n:"Note card from leadership",d:"Your message printed on a card in every box.",p:2}
 ];
-var S={tier:50,mode:"ab",A:[],B:[],one:[],box:[],add:{},hc:40,f:"all",fit:false};
+var S={ship:"office",tier:50,mode:"ab",A:[],B:[],one:[],box:[],add:{},hc:40,f:"all",fit:false};
 function load(t){var p=PRESET[t];S.A=p.ab[0].slice();S.B=p.ab[1].slice();S.one=p.one.slice();S.box=p.box.slice()}
 function money(n){return"$"+Math.round(n).toLocaleString("en-US")}
 function el(t,a,h){var e=document.createElement(t);if(a)for(var k in a){if(k==="class")e.className=a[k];else e.setAttribute(k,a[k])}if(h!=null)e.innerHTML=h;return e}
@@ -443,7 +445,7 @@ function cost(){
   if(S.mode==="ab"){hi=mx(pr(S.A))+mx(pr(S.B));lo=mn(pr(S.A))+mn(pr(S.B))}
   else if(S.mode==="one"){hi=mx(pr(S.one));lo=mn(pr(S.one))}
   else{hi=lo=sum(pr(S.box))}
-  var ad=addonPP();return{lo:lo,hi:hi,gift:hi,ad:ad,pp:hi+ad}
+  var ad=addonPP(),sh=SHIP[S.ship].p;return{lo:lo,hi:hi,gift:hi,ad:ad,sh:sh,pp:hi+ad+sh}
 }
 function where(id){if(S.mode==="ab"){return S.A.indexOf(id)>=0?"A":S.B.indexOf(id)>=0?"B":null}var L=S[S.mode];return L.indexOf(id)>=0?"in":null}
 function fits(it){
@@ -515,6 +517,7 @@ function renderCat(){
 }
 function renderAddons(){
   var a=document.getElementById("addons");a.innerHTML="";
+  ["office","home"].forEach(function(k){var x=SHIP[k];var l=el("label",null,'<input type="radio" name="ship" '+(S.ship===k?"checked":"")+'><span><b>'+x.n+'</b> <span style="color:var(--padauk);font-weight:700">about '+money(x.p)+' per person, included</span><small>'+x.d+'</small></span>');l.querySelector("input").onchange=function(){S.ship=k;renderPanel();pv.render()};a.appendChild(l)});
   ADDONS.forEach(function(x){
     var l=el("label",null,'<input type="checkbox" '+(S.add[x.id]?"checked":"")+'><span><b>'+x.n+'</b> <span style="color:var(--padauk);font-weight:700">+'+money(x.p)+' per person</span><small>'+x.d+'</small></span>');
     l.querySelector("input").onchange=function(){S.add[x.id]=this.checked;renderPanel();pv.render()};a.appendChild(l);
@@ -528,12 +531,12 @@ function renderPanel(){
   document.getElementById("rmode").textContent=MODES.filter(function(m){return m.id===S.mode})[0].n;
   document.getElementById("ritems").textContent=count();
   document.getElementById("rpp").textContent=money(c.pp);
-  var rr=S.mode==="box"?"Everyone gets the same box":"Cheapest choice "+money(c.lo+c.ad)+", priciest "+money(c.pp)+". You pay one flat price.";
-  if(c.ad)rr+=" Includes "+money(c.ad)+" in extras.";
+  var rr=S.mode==="box"?"Everyone gets the same box":"Cheapest choice "+money(c.lo+c.ad+c.sh)+", priciest "+money(c.pp)+". You pay one flat price.";
+  rr+=" Includes about "+money(c.sh)+" shipping"+(c.ad?" and "+money(c.ad)+" in extras":"")+".";
   document.getElementById("rrange").textContent=ready()?rr:"Add items to see a price.";
   var f=document.getElementById("rflag");
   if(!ready()){f.className="flag bad";f.textContent=S.mode==="ab"?"Add at least one item to each group.":"Add at least one item."}
-  else if(c.gift<=S.tier){f.className="flag ok";f.textContent="The gift fits your "+money(S.tier)+" tier"+(c.gift<S.tier?", with "+money(S.tier-c.gift)+" to spare.":" exactly.")+(c.ad?" Extras are on top.":"")}
+  else if(c.gift<=S.tier){f.className="flag ok";f.textContent="The gift fits your "+money(S.tier)+" tier"+(c.gift<S.tier?", with "+money(S.tier-c.gift)+" to spare.":" exactly.")+" Shipping"+(c.ad?" and extras are":" is")+" included in the all-in price."}
   else{f.className="flag bad";f.textContent="That's "+money(c.gift-S.tier)+" over your "+money(S.tier)+" tier. Drop the priciest item or move up a tier."}
   var hc=Math.max(0,Math.min(5000,parseInt(document.getElementById("hc").value,10)||0));S.hc=hc;
   document.getElementById("rtotal").textContent=money(c.pp*hc);
@@ -548,13 +551,14 @@ function planText(){
   if(S.mode==="ab"){L.push("Group A: "+nm(S.A));L.push("Group B: "+nm(S.B))}
   else L.push((S.mode==="one"?"Gift menu: ":"Every box: ")+nm(S[S.mode]));
   var ad=ADDONS.filter(function(a){return S.add[a.id]}).map(function(a){return a.n});if(ad.length)L.push("Extras: "+ad.join(", "));
+  L.push("Shipping: "+SHIP[S.ship].n+" (included)");
   L.push("People: "+S.hc);
-  L.push("Estimate: "+money(c.pp)+" per person, "+money(c.pp*S.hc)+" total");
+  L.push("All-in estimate: "+money(c.pp)+" per person, "+money(c.pp*S.hc)+" total (gift, engraving, packing and shipping)");
   return L.join("\n");
 }
 function shareUrl(){
   var q=new URLSearchParams();if(co.trim()&&co.trim()!=="Your Company")q.set("co",co.trim());
-  q.set("t",S.tier);q.set("m",S.mode);q.set("a",S.A.join("."));q.set("b",S.B.join("."));q.set("one",S.one.join("."));q.set("box",S.box.join("."));q.set("hc",S.hc);
+  q.set("t",S.tier);q.set("m",S.mode);q.set("a",S.A.join("."));q.set("b",S.B.join("."));q.set("one",S.one.join("."));q.set("box",S.box.join("."));q.set("hc",S.hc);q.set("s",S.ship);
   var ad=Object.keys(S.add).filter(function(k){return S.add[k]});if(ad.length)q.set("x",ad.join("."));
   return location.origin+location.pathname+"?"+q.toString();
 }
@@ -628,6 +632,7 @@ var pv=(function(){
     var rules=S.mode==="ab"?["1 pick from Group A","1 pick from Group B"]:S.mode==="one"?["Pick 1 gift"]:["Choose your colors and options"];
     if(S.add.name)rules.push("Your name engraved on it");
     if(S.add.gbox)rules.push("Arrives in a gift box");
+    if(S.ship==="home")rules.push("Ships to your home");
     root.appendChild(el("div",{"class":"rule"},rules.map(function(r){return"<span>"+esc(r)+"</span>"}).join("")));
     root.appendChild(el("p",{"class":"deadline"},'Picks close <b>Friday, December 4 at 11:59 PM Eastern</b> <span style="color:var(--muted)">(example date)</span>.'));
     var lay=el("div",{"class":"playout"}),cat=el("div");
@@ -686,6 +691,7 @@ try{
   function ids(k){var v=q.get(k);return v==null?null:v.split(".").filter(function(i){return BY[i]})}
   if(ids("a"))S.A=ids("a");if(ids("b"))S.B=ids("b");if(ids("one"))S.one=ids("one");if(ids("box"))S.box=ids("box");
   var hc=parseInt(q.get("hc"),10);if(hc>0)document.getElementById("hc").value=Math.min(5000,hc);
+  if(SHIP[q.get("s")])S.ship=q.get("s");
   (q.get("x")||"").split(".").forEach(function(k){if(k)S.add[k]=true});
 }catch(e){}
 coIn.addEventListener("input",function(){setCo(coIn.value)});
