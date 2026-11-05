@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Team Gift Picks Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&display=swap">
+<style>
+/* Layout: kraft header band with the client's name, catalog of gift sets on the left, a sticky "Your picks" ticket on the right; demo bar on top, coordinator view at the bottom. Single committed light look (Smoky Woods brand paper). */
+:root{
+  --char:#231f1c; --walnut:#5b3a24; --kraft:#eadbc0; --shavings:#f7f1e6; --padauk:#b5532a;
+  --paper:#fffdf9; --line:#dccdb2; --muted:#6b5848; --ok:#3f6b33; --okbg:#e6efdc; --warnbg:#f6e7cf; --focus:#2f6fd6;
+  --head:"Zilla Slab",Rockwell,Georgia,serif;
+  --body:"Segoe UI","Source Sans 3",system-ui,-apple-system,Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--shavings);color:var(--char);font-family:var(--body);font-size:16px;line-height:1.5;margin:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--head);text-wrap:balance;margin:0;line-height:1.1}
+
+.demo{background:var(--char);color:var(--shavings);font-size:14px}
+.demo .wrap{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-block:10px}
+.demo b{color:#f0a37c;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+.demo label{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.demo input{background:#3a332e;border:1px solid #5a4f47;border-radius:6px;padding:6px 10px;color:var(--shavings);width:210px;max-width:100%}
+
+header.top{background:var(--kraft) repeating-linear-gradient(92deg,rgba(91,58,36,.05) 0 2px,transparent 2px 11px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;gap:18px;align-items:center;padding-block:22px}
+.clientlogo{flex:none;width:96px;height:96px;border-radius:12px;background:var(--paper);border:2px dashed #b9a684;display:grid;place-items:center;text-align:center;font-family:var(--head);font-weight:700;font-size:15px;line-height:1.1;color:var(--walnut);padding:8px;overflow:hidden;overflow-wrap:anywhere}
+@media (max-width:600px){.clientlogo{width:72px;height:72px;font-size:12px}}
+.who{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--walnut)}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;margin-top:4px}
+.makers{font-size:14px;color:var(--muted);margin-top:6px}
+
+.intro{padding-block:22px 6px;max-width:780px;display:grid;gap:10px}
+.intro p{margin:0;color:var(--muted)}
+.rule{display:flex;flex-wrap:wrap;gap:8px}
+.rule span{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600}
+.deadline{margin:0;padding:9px 12px;border-left:4px solid var(--padauk);background:var(--paper);font-size:15px}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;padding-block:10px 40px}
+@media (max-width:920px){.layout{grid-template-columns:minmax(0,1fr)}}
+h2{font-size:28px;font-weight:700;margin:18px 0 4px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+h2 small{font-family:var(--body);font-size:14px;font-weight:600;color:var(--muted)}
+.groupnote{margin:0 0 12px;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.well{background:var(--kraft);aspect-ratio:4/3;max-width:100%;position:relative;display:flex;align-items:center;justify-content:center}
+.well svg{width:100%;height:100%;display:block}
+.badge{position:absolute;top:10px;left:10px;background:var(--char);color:var(--shavings);font-size:12px;font-weight:700;border-radius:5px;padding:3px 8px;letter-spacing:.05em}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
+.name{font-size:21px;font-weight:700}
+.tag{font-size:14px;font-style:italic;color:var(--walnut);margin:0}
+.inbox{margin:0;padding:0;list-style:none;display:grid;gap:5px;font-size:14px}
+.inbox li{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start}
+.who2{font-size:11px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 6px;margin-top:2px;white-space:nowrap}
+.who2.mk-sw{background:var(--char);color:var(--shavings)}
+.who2.mk-sls{background:#f3d9cf;color:#7a2f15}
+.chlabel{font-size:13px;color:var(--muted)}
+.chlabel b{color:var(--char)}
+.swatches{display:flex;flex-wrap:wrap;gap:6px}
+.sw{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{border-color:var(--char);box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--char)}
+.txtb{border:1px solid var(--line);background:var(--shavings);border-radius:6px;padding:5px 10px;font-size:13px;font-weight:600;cursor:pointer}
+.txtb[aria-pressed="true"]{background:var(--char);color:var(--shavings);border-color:var(--char)}
+.add{margin-top:auto;border:0;border-radius:8px;padding:10px 12px;font-weight:700;background:var(--padauk);color:#fff;cursor:pointer}
+.add:disabled{background:#e9dfcf;color:var(--muted);cursor:not-allowed}
+.why{font-size:12px;color:var(--muted);min-height:16px;margin:0}
+
+aside.panel{position:sticky;top:12px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px}
+@media (max-width:920px){aside.panel{position:static}}
+.panel h3{font-size:26px}
+.meter{display:flex;gap:6px}
+.meter i{flex:1;height:14px;border-radius:4px;background:#efe5d4;border:1px solid var(--line)}
+.meter i.on{background:var(--padauk);border-color:var(--padauk)}
+.meterlabel{font-size:14px;color:var(--muted);margin:0}
+.picks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.picks li{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--shavings)}
+.picks .thumb{width:52px;height:39px;flex:none;border-radius:5px;overflow:hidden;background:var(--kraft)}
+.picks .thumb svg{width:100%;height:100%;display:block}
+.picks .t{flex:1;min-width:0;font-size:14px;line-height:1.3}
+.picks .t b{display:block}
+.rm{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer}
+.empty{font-size:14px;color:var(--muted);border:1px dashed var(--line);border-radius:8px;padding:12px;margin:0}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+label.f{display:block;font-weight:600;font-size:14px;margin:0 0 4px}
+input.txt{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--shavings)}
+.submit{width:100%;border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px;background:var(--ok);color:#fff;cursor:pointer}
+.submit:disabled{background:#e9dfcf;color:var(--muted);cursor:not-allowed}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.done{background:var(--okbg);border-radius:8px;padding:12px;font-size:14px;display:grid;gap:6px}
+.done pre{white-space:pre-wrap;font-family:inherit;margin:0;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px}
+.demonote{background:var(--warnbg);border-radius:8px;padding:10px 12px;font-size:13px;margin:0}
+
+.coord{border-top:1px solid var(--line);background:var(--paper)}
+.coord .wrap{padding-block:26px 34px;display:grid;gap:14px}
+.coord h2{margin:0}
+.coord p{margin:0;color:var(--muted);max-width:72ch}
+.cgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px}
+@media (max-width:820px){.cgrid{grid-template-columns:minmax(0,1fr)}}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--shavings)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.n{font-variant-numeric:tabular-nums;text-align:right;font-weight:700}
+tr:last-child td{border-bottom:0}
+.ghost{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:7px 12px;font-size:14px;cursor:pointer}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;background:var(--shavings);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:14px}
+.steps li::before{content:counter(s);font-family:var(--head);font-weight:700;font-size:22px;color:var(--padauk);display:block;line-height:1}
+
+footer{border-top:1px solid var(--line);background:var(--kraft)}
+footer .wrap{display:flex;gap:14px;align-items:center;padding-block:16px 24px;font-size:13px;color:var(--walnut);flex-wrap:wrap}
+footer img{width:64px;height:auto}
+.mbar{display:none}
+@media (max-width:920px){
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;gap:10px;align-items:center;justify-content:space-between;padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--paper);border-top:1px solid var(--line);font-size:14px}
+  .mbar a{background:var(--padauk);color:#fff;border-radius:8px;padding:8px 12px;font-weight:700;text-decoration:none}
+  body{padding-bottom:64px}
+}
+@media (prefers-reduced-motion:no-preference){.well svg{transition:opacity .2s}}
+</style>
+</head>
+<body>
+
+
+<div class="demo"><div class="wrap">
+  <b>Demo</b>
+  <span>A sample gift program from Smoky Woods and Sassy Little Southern. Nothing here is a real order.</span>
+  <label for="co">Try a client name: <input id="co" maxlength="28" value="Your Company" autocomplete="off"></label>
+</div></div>
+
+<header class="top"><div class="wrap">
+  <div class="clientlogo" id="clogo" aria-hidden="true">Your logo here</div>
+  <div style="min-width:0">
+    <div class="who" id="who">Your Company thank-you gifts</div>
+    <h1 id="h1">Pick your thank-you gift</h1>
+    <div class="makers">Engraved hardwood and gear by Smoky Woods. Hand-dipped chocolates by Sassy Little Southern.</div>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <section class="intro">
+    <p>Every set pairs something engraved with your company logo and a box of hand-dipped chocolate. Pick what you want, choose your colors, add your name, and send it. The wood lasts for years. The chocolate, realistically, lasts until Thursday.</p>
+    <div class="rule"><span>You have 2 points</span><span>Group A set = 2 points</span><span>Group B set = 1 point</span></div>
+    <p>So you can take <b>one</b> Group A set, or <b>two</b> Group B sets (two of the same is fine).</p>
+    <p class="deadline">Picks close <b>Friday, December 4 at 11:59 PM Eastern</b> <span style="color:var(--muted)">(example date)</span>. Gifts ship together the week of December 14.</p>
+  </section>
+
+  <div class="layout">
+    <div id="catalog"></div>
+
+    <aside class="panel" aria-labelledby="ph">
+      <h3 id="ph">Your picks</h3>
+      <div class="meter" aria-hidden="true"><i></i><i></i></div>
+      <p class="meterlabel" id="meterlabel">0 of 2 points used</p>
+      <ul class="picks" id="picks"></ul>
+      <p class="empty" id="empty">Nothing picked yet. Choose your options on any set and tap Add.</p>
+      <div class="names">
+        <div><label class="f" for="fn">First name</label><input class="txt" id="fn" autocomplete="given-name" maxlength="40" placeholder="e.g. Pat"></div>
+        <div><label class="f" for="ln">Last name</label><input class="txt" id="ln" autocomplete="family-name" maxlength="40" placeholder="e.g. Morgan"></div>
+      </div>
+      <button class="submit" id="submit" type="button" disabled>Send my picks</button>
+      <p class="hint" id="hint">Add at least one set, plus your first and last name, to continue.</p>
+      <div class="done" id="done" hidden>
+        <span><b>Got it.</b> In a live program this goes straight to your coordinator's spreadsheet. In this demo it shows up in the coordinator view below.</span>
+        <pre id="summary"></pre>
+        <button class="ghost" id="another" type="button">Pick for another person</button>
+      </div>
+      <p class="demonote">Demo: picks stay in this browser only. Try a few names, then scroll down to see what the coordinator gets.</p>
+    </aside>
+  </div>
+</main>
+
+<section class="coord" id="coord" aria-labelledby="ch"><div class="wrap">
+  <h2 id="ch">What the coordinator sees</h2>
+  <p>One list with everyone's name and picks, and a count of every set and color to order. No prices on the employee page, one quote and one invoice for the company.</p>
+  <div class="cgrid">
+    <div class="tw"><table><thead><tr><th>Name</th><th>Pick 1</th><th>Pick 2</th></tr></thead><tbody id="olist"></tbody></table></div>
+    <div class="tw"><table><thead><tr><th>Set and options</th><th style="text-align:right">Qty</th></tr></thead><tbody id="tally"></tbody></table></div>
+  </div>
+  <div><button class="ghost" id="reset" type="button">Clear the demo list</button></div>
+  <h2 style="margin-top:10px">How a program runs</h2>
+  <ol class="steps">
+    <li>We set up a page like this one with your logo, your sets and your deadline.</li>
+    <li>You get a digital proof of your logo on each item. Nothing is engraved until you approve it.</li>
+    <li>Your people pick their gifts. You get one list and one invoice.</li>
+    <li>Smoky Woods engraves, Sassy Little Southern dips and packs, and everything ships in one box per person.</li>
+  </ol>
+</div></section>
+
+<footer><div class="wrap">
+  <img src="sw-badge.png" alt="Smoky Woods badge">
+  <span>Smoky Woods &times; Sassy Little Southern. Sample page for discussion; sets, contents and dates are examples.</span>
+</div></footer>
+
+<div class="mbar"><span id="mbart">0 of 2 points used</span><a href="#ph">Review and send</a></div>
+
+<script>
+(function(){
+var BUDGET=2;
+var CHOC=[["Milk chocolate","#7b4a2d"],["Dark chocolate","#3e2418"],["White chocolate","#efe3cc"]];
+var WOODS=[["Walnut","#6b4630"],["Maple","#d9b98a"],["Cherry","#a0553a"]];
+var TUMB=[["Black","#1b1e26"],["White","#ecebf1"],["Navy","#2a3463"],["Blue","#173a96"],["Light Blue","#74b4ec"],["Teal","#5ccfe3"],["Green","#34503f"],["Maroon","#74162b"],["Red","#a3122a"],["Pink","#e660ab"],["Purple","#50388a"],["Yellow","#f3b51e"],["Orange","#e97f2e"]];
+var JRN=[["White","#e6e9e2"],["Metallic Gold","#d1b776"],["Rawhide","#c5722d"],["Navy","#35568a"],["Metallic Silver","#bcbcbe"],["Brown","#915435"],["Red","#8b3229"],["Gray","#737569"],["Pink","#c9556c"],["Black","#28292b"],["Sage","#52774c"]];
+var co="Your Company";
+function mark(){var s=co.trim()||"Your Company";return s.length>16?s.slice(0,15)+"…":s}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function dk(h,f){var n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;f=f||.6;return"rgb("+Math.round(r*f)+","+Math.round(g*f)+","+Math.round(b*f)+")"}
+function lum(h){var n=parseInt(h.slice(1),16);return((n>>16)*.3+(n>>8&255)*.59+(n&255)*.11)/255}
+function svg(inner){return '<svg viewBox="0 0 240 180" role="img" aria-hidden="true" focusable="false">'+inner+'</svg>'}
+function rods(x,y,ch,n,rot){var s="";for(var i=0;i<n;i++){var ox=x+i*13;s+='<g transform="rotate('+rot+' '+ox+' '+y+')"><rect x="'+ox+'" y="'+(y-62)+'" width="9" height="66" rx="4" fill="#c98a44"/><rect x="'+ox+'" y="'+(y-62)+'" width="9" height="40" rx="4" fill="'+ch+'"/><path d="M'+(ox+1)+' '+(y-40)+'l7 -5M'+(ox+1)+' '+(y-30)+'l7 -5" stroke="'+(lum(ch)>.6?"#7b4a2d":"#efe3cc")+'" stroke-width="1.4" opacity=".8"/></g>'}return s}
+function bomb(x,y,ch){return '<circle cx="'+x+'" cy="'+y+'" r="15" fill="'+ch+'"/><path d="M'+(x-12)+' '+(y-4)+'q6 6 12 0t12 0" stroke="'+(lum(ch)>.6?"#a0553a":"#efe3cc")+'" stroke-width="2" fill="none"/><circle cx="'+(x-5)+'" cy="'+(y-6)+'" r="3" fill="#fff" opacity=".25"/>'}
+function engr(x,y,txt,col,size){return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-family="Zilla Slab,Rockwell,Georgia,serif" font-weight="700" font-size="'+(size||12)+'" fill="'+col+'">'+esc(txt)+'</text>'}
+
+var ITEMS=[
+ {id:"board",group:"A",name:"The Board Meeting",tag:"The only meeting that ends with snacks.",
+  sw:"Hardwood charcuterie board, about 11 x 16 in, with your logo engraved and a food-safe oil finish. Built by hand.",
+  sls:"Box of 18 hand-dipped treats: chocolate-covered pretzel rods, Oreos and crispy rice pops.",
+  choices:[{k:"wood",label:"Board wood",opts:WOODS},{k:"choc",label:"Chocolate",opts:CHOC}],
+  art:function(o){var w=o.wood[1],c=o.choc[1];return svg('<rect x="22" y="40" width="170" height="104" rx="14" fill="'+w+'"/><rect x="188" y="78" width="36" height="28" rx="10" fill="'+w+'"/><circle cx="212" cy="92" r="5" fill="#eadbc0"/><path d="M34 62q60 -8 146 4M34 122q70 8 146 -2" stroke="'+dk(w,.82)+'" stroke-width="2" fill="none"/>'+engr(108,84,mark(),dk(w,.5),15)+'<rect x="40" y="96" width="136" height="38" rx="6" fill="#fffdf9" opacity=".9"/>'+[0,1,2].map(function(i){return '<rect x="46" y="'+(100+i*11)+'" width="60" height="8" rx="4" fill="#c98a44"/><rect x="66" y="'+(100+i*11)+'" width="40" height="8" rx="4" fill="'+c+'"/>'}).join('')+'<circle cx="120" cy="115" r="10" fill="#2b1a12"/><path d="M110 115a10 10 0 0 0 20 0z" fill="'+c+'"/><circle cx="145" cy="115" r="10" fill="'+c+'"/><rect x="158" y="104" width="14" height="22" rx="4" fill="#f2e6c9"/><rect x="158" y="104" width="14" height="11" rx="4" fill="'+c+'"/>')}},
+ {id:"box",group:"A",name:"Break Glass Box",tag:"For the Monday after a long quarter.",
+  sw:"Dark walnut keepsake box, 8.5 x 6 x 3 in, felt lined, with your logo engraved on the lid. Plus an engraved hardwood mallet.",
+  sls:"A breakable chocolate in the shape you pick, hand-painted with your colors. Smash it with the mallet. Keep the box.",
+  choices:[{k:"shape",label:"Breakable shape",type:"text",opts:[["Heart"],["Football"],["Logo plaque"]]},{k:"choc",label:"Chocolate",opts:CHOC}],
+  art:function(o){var c=o.choc[1],w="#5a4636",s=o.shape[0],sh;
+   if(s==="Heart")sh='<path d="M170 128c-30 -18 -44 -34 -44 -50a20 20 0 0 1 44 -6a20 20 0 0 1 44 6c0 16 -14 32 -44 50z" fill="'+c+'"/>';
+   else if(s==="Football")sh='<ellipse cx="170" cy="96" rx="44" ry="26" fill="'+c+'" transform="rotate(-18 170 96)"/><path d="M150 103l40 -14M160 90l3 8M170 87l3 8M180 84l3 8" stroke="'+(lum(c)>.6?"#7b4a2d":"#efe3cc")+'" stroke-width="2.5" transform="rotate(-0 170 96)"/>';
+   else sh='<rect x="128" y="62" width="84" height="64" rx="8" fill="'+c+'"/>'+engr(170,100,mark(),lum(c)>.6?"#7b4a2d":"#efe3cc",11);
+   return svg('<rect x="18" y="64" width="118" height="22" rx="3" fill="'+dk(w,.85)+'"/><rect x="22" y="86" width="110" height="66" rx="3" fill="'+w+'"/>'+engr(77,79,mark(),"#c9a985",11)+'<rect x="72" y="98" width="10" height="8" rx="1" fill="#c9a985"/>'+sh+'<g transform="rotate(28 120 150)"><rect x="70" y="146" width="80" height="7" rx="3" fill="#d9b98a"/><rect x="146" y="136" width="18" height="27" rx="4" fill="#a0553a"/></g>')}},
+ {id:"cocoa",group:"B",name:"Cocoa and Cup",tag:"Hot cocoa now, cold water in July.",
+  sw:"20 oz insulated stainless tumbler with lid, laser engraved with your logo.",
+  sls:"Three hand-made cocoa bombs. Drop one in hot milk and watch it open up.",
+  choices:[{k:"color",label:"Tumbler color",opts:TUMB},{k:"choc",label:"Cocoa bombs",opts:CHOC}],
+  art:function(o){var t=o.color[1],c=o.choc[1];return svg('<rect x="66" y="28" width="76" height="14" rx="5" fill="#2a2a2a"/><path d="M68 42h72l-8 116h-56z" fill="'+t+'"/><path d="M76 50l6 100" stroke="#fff" stroke-width="5" opacity=".18"/>'+engr(104,104,mark(),lum(t)>.75?"#9a9a9a":"#e9e6e0",11)+bomb(166,138,c)+bomb(196,138,c)+bomb(181,112,c))}},
+ {id:"opener",group:"B",name:"Quitting Time",tag:"Salty, sweet, and opens at five.",
+  sw:"Hardwood bottle opener with a steel cap lifter, your logo engraved on the handle.",
+  sls:"Hand-dipped chocolate-covered pretzel rods, box of 6.",
+  choices:[{k:"wood",label:"Opener wood",opts:WOODS},{k:"choc",label:"Chocolate",opts:CHOC}],
+  art:function(o){var w=o.wood[1],c=o.choc[1];return svg('<g transform="rotate(-12 80 90)"><rect x="56" y="18" width="50" height="148" rx="22" fill="'+w+'"/><rect x="64" y="28" width="34" height="34" rx="6" fill="#9aa0a6"/><rect x="70" y="40" width="22" height="12" rx="4" fill="'+w+'"/><text x="81" y="120" transform="rotate(-90 81 120)" text-anchor="middle" font-family="Zilla Slab,Rockwell,Georgia,serif" font-weight="700" font-size="12" fill="'+dk(w,.5)+'">'+esc(mark())+'</text></g>'+rods(140,158,c,5,-4))}},
+ {id:"journal",group:"B",name:"Minutes and Mints",tag:"Take notes. Eat the evidence.",
+  sw:"Leather-feel notebook journal, 8.75 x 5.5 in, 240 lined pages, refillable, engraved with your logo.",
+  sls:"Six custom chocolates stamped with your logo.",
+  choices:[{k:"color",label:"Journal color",opts:JRN},{k:"choc",label:"Chocolate",opts:CHOC}],
+  art:function(o){var j=o.color[1],c=o.choc[1],sq="";for(var r=0;r<3;r++)for(var q=0;q<2;q++){sq+='<rect x="'+(150+q*34)+'" y="'+(46+r*34)+'" width="28" height="28" rx="5" fill="'+c+'"/><rect x="'+(155+q*34)+'" y="'+(51+r*34)+'" width="18" height="18" rx="3" fill="none" stroke="'+(lum(c)>.6?"#b08a6a":"#8a5a3c")+'" stroke-width="1.5"/>'}
+   return svg('<rect x="30" y="24" width="96" height="136" rx="6" fill="'+j+'"/><rect x="104" y="24" width="8" height="136" fill="'+dk(j,.78)+'"/>'+engr(72,96,mark(),j==="#28292b"?"#cfcfcf":dk(j,.45),11)+'<rect x="142" y="38" width="76" height="110" rx="8" fill="#fffdf9"/>'+sq)}},
+ {id:"coaster",group:"B",name:"Coffee Table Set",tag:"Saves the desk. Feeds the person at it.",
+  sw:"Set of 4 hardwood coasters, each engraved with your logo.",
+  sls:"Six hand-dipped chocolate-covered Oreos.",
+  choices:[{k:"wood",label:"Coaster wood",opts:WOODS},{k:"choc",label:"Chocolate",opts:CHOC}],
+  art:function(o){var w=o.wood[1],c=o.choc[1],s="";for(var i=3;i>=0;i--)s+='<ellipse cx="80" cy="'+(118-i*10)+'" rx="56" ry="22" fill="'+(i?dk(w,.8):w)+'"/>';
+   s+='<ellipse cx="80" cy="88" rx="56" ry="22" fill="'+w+'"/><ellipse cx="80" cy="88" rx="44" ry="16" fill="none" stroke="'+dk(w,.75)+'" stroke-width="1.5"/>'+engr(80,92,mark(),dk(w,.5),11);
+   for(var k=0;k<3;k++){var x=170+(k%2)*28,y=70+k*30;s+='<circle cx="'+x+'" cy="'+y+'" r="15" fill="#2b1a12"/><path d="M'+(x-15)+' '+y+'a15 15 0 0 0 30 0z" fill="'+c+'"/>'}
+   return svg(s)}}
+];
+var sel={},picks=[];
+ITEMS.forEach(function(it){sel[it.id]={};it.choices.forEach(function(ch){if(ch.opts.length===1)sel[it.id][ch.k]=0})});
+function pts(g){return g==="A"?2:1}
+function used(){return picks.reduce(function(s,p){return s+pts(p.group)},0)}
+function el(t,a,h){var e=document.createElement(t);if(a)for(var k in a){if(k==="class")e.className=a[k];else e.setAttribute(k,a[k])}if(h!=null)e.innerHTML=h;return e}
+function curOpts(it,useDefault){var o={},ok=true;it.choices.forEach(function(ch){var i=sel[it.id][ch.k];if(i==null){ok=false;i=0}o[ch.k]=ch.opts[i]});return{o:o,ok:ok}}
+function missing(it){for(var i=0;i<it.choices.length;i++){if(sel[it.id][it.choices[i].k]==null)return it.choices[i].label.toLowerCase()}return null}
+
+function render(){
+  var cat=document.getElementById("catalog");cat.innerHTML="";
+  [["A","Group A","2 points each, pick one","The big sets. One of these uses both your points."],["B","Group B","1 point each, pick two","Take any two, or two of the same."]].forEach(function(g){
+    cat.appendChild(el("h2",null,g[1]+'<small>'+g[2]+'</small>'));
+    cat.appendChild(el("p",{"class":"groupnote"},g[3]));
+    var grid=el("div",{"class":"grid"});
+    ITEMS.filter(function(i){return i.group===g[0]}).forEach(function(it){grid.appendChild(card(it))});
+    cat.appendChild(grid);
+  });
+  renderPanel();
+}
+function card(it){
+  var c=el("article",{"class":"card"});
+  var w=el("div",{"class":"well"},it.art(curOpts(it).o));
+  w.appendChild(el("span",{"class":"badge"},"GROUP "+it.group+" &middot; "+pts(it.group)+" PT"+(pts(it.group)>1?"S":"")));
+  c.appendChild(w);
+  var b=el("div",{"class":"body"});
+  b.appendChild(el("h4",{"class":"name"},esc(it.name)));
+  b.appendChild(el("p",{"class":"tag"},esc(it.tag)));
+  b.appendChild(el("ul",{"class":"inbox"},'<li><span class="who2 mk-sw">SMOKY WOODS</span><span>'+esc(it.sw)+'</span></li><li><span class="who2 mk-sls">SASSY LITTLE SOUTHERN</span><span>'+esc(it.sls)+'</span></li>'));
+  it.choices.forEach(function(ch){
+    var ci=sel[it.id][ch.k];
+    b.appendChild(el("div",{"class":"chlabel"},esc(ch.label)+": <b>"+(ci==null?"choose one":esc(ch.opts[ci][0]))+"</b>"));
+    var row=el("div",{"class":"swatches",role:"group","aria-label":it.name+" "+ch.label});
+    ch.opts.forEach(function(op,i){
+      var s;
+      if(ch.type==="text"){s=el("button",{"class":"txtb",type:"button","aria-pressed":String(ci===i)},esc(op[0]))}
+      else{s=el("button",{"class":"sw",type:"button",title:op[0],"aria-label":op[0],"aria-pressed":String(ci===i)});s.style.background=op[1]}
+      s.onclick=function(){sel[it.id][ch.k]=i;render()};
+      row.appendChild(s);
+    });
+    b.appendChild(row);
+  });
+  var need=pts(it.group),left=BUDGET-used(),m=missing(it);
+  var add=el("button",{"class":"add",type:"button"},"Add this set"),why="";
+  if(need>left){add.disabled=true;why=left===0?"You've used both points.":"Needs 2 points; you have "+left+" left."}
+  else if(m){add.disabled=true;why="Pick the "+m+" first."}
+  add.onclick=function(){var cur=curOpts(it).o;picks.push({id:it.id,group:it.group,name:it.name,opts:it.choices.map(function(ch){return cur[ch.k][0]}),o:cur});document.getElementById("done").hidden=true;render()};
+  b.appendChild(add);
+  b.appendChild(el("p",{"class":"why"},why));
+  c.appendChild(b);
+  return c;
+}
+function label(p){return p.name+" - "+p.opts.join(", ")+" (Group "+p.group+")"}
+function itemOf(id){return ITEMS.filter(function(i){return i.id===id})[0]}
+function renderPanel(){
+  var u=used(),m=document.querySelectorAll(".meter i");
+  m[0].className=u>=1?"on":"";m[1].className=u>=2?"on":"";
+  document.getElementById("meterlabel").textContent=u+" of "+BUDGET+" points used";
+  document.getElementById("mbart").textContent=u+" of "+BUDGET+" points used";
+  var ul=document.getElementById("picks");ul.innerHTML="";
+  document.getElementById("empty").hidden=picks.length>0;
+  picks.forEach(function(p,i){
+    var li=el("li");
+    li.appendChild(el("div",{"class":"thumb"},itemOf(p.id).art(p.o)));
+    li.appendChild(el("div",{"class":"t"},"<b>"+esc(p.name)+"</b>"+esc(p.opts.join(", "))+" &middot; Group "+p.group));
+    var r=el("button",{"class":"rm",type:"button","aria-label":"Remove "+p.name},"Remove");
+    r.onclick=function(){picks.splice(i,1);render()};
+    li.appendChild(r);ul.appendChild(li);
+  });
+  updateSubmit();
+}
+function clean(id){return document.getElementById(id).value.trim().replace(/\s+/g," ")}
+function letters(s){return(s.match(/[A-Za-zÀ-ɏ]/g)||[]).length}
+function nameOk(){return letters(clean("fn"))>=2&&letters(clean("ln"))>=2}
+function updateSubmit(){
+  var s=document.getElementById("submit"),h=document.getElementById("hint");
+  var ok=picks.length>0&&nameOk();s.disabled=!ok;
+  if(!ok){h.textContent=!picks.length?"Add at least one set, plus your first and last name, to continue.":(letters(clean("fn"))<2?"Enter your first name (at least 2 letters).":"Enter your last name (at least 2 letters).");return}
+  h.textContent=used()<BUDGET?"You still have 1 point left. Add another Group B set, or send as is.":"Ready when you are.";
+}
+/* demo order list, this browser only */
+var KEY="slsGiftDemoOrders";
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){return mem}}
+var mem=[];
+function save(a){mem=a;try{localStorage.setItem(KEY,JSON.stringify(a))}catch(e){}}
+var SAMPLE=[{n:"Dana Whitfield",p:["Break Glass Box - Heart, Dark chocolate (Group A)",""]},{n:"Marcus Bell",p:["Cocoa and Cup - Navy, Milk chocolate (Group B)","Quitting Time - Walnut, Dark chocolate (Group B)"]},{n:"Priya Shah",p:["The Board Meeting - Cherry, White chocolate (Group A)",""]}];
+function renderCoord(){
+  var list=load(),rows=list.length?list:SAMPLE,ob=document.getElementById("olist"),tb=document.getElementById("tally");
+  ob.innerHTML=rows.map(function(r){return"<tr><td>"+esc(r.n)+(list.length?"":' <span style="color:var(--muted)">(sample)</span>')+"</td><td>"+esc(r.p[0]||"")+"</td><td>"+esc(r.p[1]||"")+"</td></tr>"}).join("");
+  var t={};rows.forEach(function(r){r.p.forEach(function(x){if(x){var k=x.replace(/ \(Group .\)$/,"");t[k]=(t[k]||0)+1}})});
+  var keys=Object.keys(t).sort();
+  tb.innerHTML=keys.map(function(k){return"<tr><td>"+esc(k)+"</td><td class=\"n\">"+t[k]+"</td></tr>"}).join("");
+}
+function summary(){return"Name: "+clean("fn")+" "+clean("ln")+"\nPick 1: "+(picks[0]?label(picks[0]):"(none)")+"\nPick 2: "+(picks[1]?label(picks[1]):"(none)")}
+["fn","ln"].forEach(function(id){document.getElementById(id).addEventListener("input",updateSubmit)});
+document.getElementById("submit").onclick=function(){
+  if(this.disabled)return;
+  var a=load().slice();a.push({n:clean("fn")+" "+clean("ln"),p:[picks[0]?label(picks[0]):"",picks[1]?label(picks[1]):""]});save(a);
+  document.getElementById("summary").textContent=summary();
+  document.getElementById("done").hidden=false;
+  renderCoord();
+};
+document.getElementById("another").onclick=function(){picks=[];document.getElementById("fn").value="";document.getElementById("ln").value="";document.getElementById("done").hidden=true;render();document.getElementById("catalog").scrollIntoView({behavior:"smooth"})};
+document.getElementById("reset").onclick=function(){save([]);renderCoord()};
+/* client name */
+function setCo(v){co=v;var s=v.trim()||"Your Company";document.getElementById("who").textContent=s+" thank-you gifts";document.getElementById("clogo").textContent=v.trim()&&v.trim()!=="Your Company"?s:"Your logo here";render()}
+var coIn=document.getElementById("co");
+try{var q=new URLSearchParams(location.search).get("co");if(q){coIn.value=q.slice(0,28)}}catch(e){}
+coIn.addEventListener("input",function(){setCo(coIn.value)});
+setCo(coIn.value);renderCoord();
+})();
+</script>
+
+</body>
+</html>
