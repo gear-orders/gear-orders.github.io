@@ -123,7 +123,7 @@ dialog .bar{display:flex;justify-content:space-between;align-items:center;paddin
     <p>Everything below is laser engraved with the American Track logo (pictures are examples). Pick what you want, choose a color, add your name, and submit. That's it.</p>
     <div class="rule"><span>You have 2 points</span><span>Group A item = 2 points</span><span>Group B item = 1 point</span></div>
     <p style="margin-top:10px">So you can take <b>one</b> Group A item, or <b>two</b> Group B items (two of the same is fine).</p>
-    <p class="deadline" id="deadline">Order deadline: <b>to be announced</b>.</p>
+    <p class="deadline" id="deadline">Orders close <b>Sunday, November 22 at 11:59 PM Eastern</b>.</p>
   </section>
 
   <div class="layout">
@@ -166,8 +166,8 @@ dialog .bar{display:flex;justify-content:space-between;align-items:center;paddin
 // XNAMEX in the name question, XPICK1X in the first pick question, XPICK2X in the second.
 var FORM_LINK = ""; // new Knoxville form link goes here (separate from the main American Track form)
 var BUDGET = 2;
-var DEADLINE = null; // set when Jim picks the date, e.g. new Date("2026-12-05T23:59:59-05:00")
-var DEADLINE_TEXT = ""; // e.g. "Saturday, December 5 at 11:59 PM Eastern"
+var DEADLINE = new Date("2026-11-22T23:59:59-05:00"); // set when Jim picks the date, e.g. new Date("2026-12-05T23:59:59-05:00")
+var DEADLINE_TEXT = "Sunday, November 22 at 11:59 PM Eastern"; // e.g. "Saturday, December 5 at 11:59 PM Eastern"
 function closed(){return !!DEADLINE&&Date.now()>DEADLINE.getTime()}
 var IMG = "img/";
 var PH_TUMBLER = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 10h28l-3 46H21z"/><path d="M16 10h32"/></svg>';
@@ -179,14 +179,14 @@ var ITEMS = [
    colors:[["Black","#1f1f1f","ammo-black"],["Green","#4c5a3c","ammo-green"]]},
   {id:"knife", group:"B", name:"The Beast Pocket Knife", desc:"Spring-assist folding knife with 440 stainless blade, safety liner lock and belt clip. 7.75 in long, 1 in wide, 0.5 lb. Seatbelt/line cutter, window breaker and bottle opener.",
    sheetFor:{"Rosewood":"knife-sheet-rosewood","Black Anodized Aluminum":"knife-sheet-black"},
-   colors:[["Black Anodized Aluminum","#262626","knife-black"],["Rosewood","#8a3a22","knife-rosewood"]]},
+   colors:[["Black Anodized Aluminum","#262626","knife-black"]]},
   {id:"box", group:"B", name:"Wood Memory Box", desc:"Medium, dark walnut, 8.5 x 6 x 3 in. Felt lined with a hinged lid.",
    more:["Memory box details","memorybox-sheet"], colors:[["Dark Walnut","#5a4636","memorybox"]]},
   {id:"tumbler", group:"B", name:"Engraved Tumbler (20 oz)", desc:"20 oz insulated stainless tumbler, no handle, with lid and straw, powder coated, laser engraved with the logo.",
-   colors:[["Black","#1b1e26","tmb-20-black"],["White","#ecebf1","tmb-20-white"],["Blue","#173a96","tmb-20-blue"],["Light Blue","#74b4ec","tmb-20-lightblue"],["Navy","#2a3463","tmb-20-navy"],["Maroon","#74162b","tmb-20-maroon"],["Red","#a3122a","tmb-20-red"],["Pink","#e660ab","tmb-20-pink"],["Teal","#5ccfe3","tmb-20-teal"],["Purple","#50388a","tmb-20-purple"],["Green","#34503f","tmb-20-green"],["Yellow","#f3b51e","tmb-20-yellow"],["Orange","#e97f2e","tmb-20-orange"]]},
+   colors:[["Light Blue","#74b4ec","tmb-20-lightblue"],["Navy","#2a3463","tmb-20-navy"],["Maroon","#74162b","tmb-20-maroon"],["Pink","#e660ab","tmb-20-pink"],["Teal","#5ccfe3","tmb-20-teal"],["Purple","#50388a","tmb-20-purple"],["Yellow","#f3b51e","tmb-20-yellow"],["Orange","#e97f2e","tmb-20-orange"]]},
   {id:"journal", group:"B", name:"Leather-Feel Notebook Journal", desc:"8.75 x 5.5 in, 240 lined pages, refillable. Engraved with the logo; black on every color except black, which engraves silver.",
    more:["All 12 journal colors","journal-colors"],
-   colors:[["1 White","#e6e9e2","jrn-01"],["2 Metallic Gold","#d1b776","jrn-02"],["3 Holographic","#b9bcca","jrn-03","holo"],["4 Rawhide","#c5722d","jrn-04"],["5 Navy","#35568a","jrn-05"],["6 Metallic Silver","#bcbcbe","jrn-06"],["7 Brown","#915435","jrn-07"],["8 Red","#8b3229","jrn-08"],["9 Gray","#737569","jrn-09"],["10 Pink","#c9556c","jrn-10"],["11 Black","#28292b","jrn-11"],["12 Sage","#52774c","jrn-12"]]}
+   colors:[["1 White","#e6e9e2","jrn-01"],["2 Metallic Gold","#d1b776","jrn-02"],["3 Holographic","#b9bcca","jrn-03","holo"],["4 Rawhide","#c5722d","jrn-04"],["5 Navy","#35568a","jrn-05"],["6 Metallic Silver","#bcbcbe","jrn-06"],["7 Brown","#915435","jrn-07"],["9 Gray","#737569","jrn-09"],["10 Pink","#c9556c","jrn-10"],["11 Black","#28292b","jrn-11"],["12 Sage","#52774c","jrn-12"]]}
 ];
 /* ===================================================== */
 
