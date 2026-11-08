@@ -68,6 +68,8 @@ h2 small{font-family:var(--f-body);font-size:14px;font-weight:600;color:var(--mu
 .sizes{display:flex;flex-wrap:wrap;gap:6px}
 .szb{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:5px 9px;font-size:13px;font-weight:600;cursor:pointer}
 .szb[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sw.out{opacity:.5;cursor:pointer}
+.sw.out::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--ink);transform:rotate(45deg)}
 .sw.holo{background:linear-gradient(135deg,#f3d7f0,#c9e3f7,#e8f0c8,#f6cfe0)!important}
 .add{margin-top:auto;border:0;border-radius:8px;padding:10px 12px;font-weight:700;background:var(--accent);color:var(--accent-ink);cursor:pointer}
 .add:disabled{background:var(--surface-2);color:var(--muted);cursor:not-allowed}
@@ -169,6 +171,9 @@ var BUDGET = 2;
 var DEADLINE = new Date("2026-11-22T23:59:59-05:00"); // set when Jim picks the date, e.g. new Date("2026-12-05T23:59:59-05:00")
 var DEADLINE_TEXT = "Sunday, November 22 at 11:59 PM Eastern"; // e.g. "Saturday, December 5 at 11:59 PM Eastern"
 function closed(){return !!DEADLINE&&Date.now()>DEADLINE.getTime()}
+// Colors shown but not orderable until back in stock. Remove a name to reopen it.
+var OUT_OF_STOCK = {knife:["Rosewood"]};
+function isOut(it,c){return !!(c&&OUT_OF_STOCK[it.id]&&OUT_OF_STOCK[it.id].indexOf(c[0])>-1)}
 var IMG = "img/";
 var PH_TUMBLER = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 10h28l-3 46H21z"/><path d="M16 10h32"/></svg>';
 var PH_KNIFE = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 40 L44 12 c6 -2 10 2 8 8 L24 44z"/><path d="M24 44 l-6 10 -8 -2 4 -10"/></svg>';
@@ -179,7 +184,7 @@ var ITEMS = [
    colors:[["Black","#1f1f1f","ammo-black"],["Green","#4c5a3c","ammo-green"]]},
   {id:"knife", group:"B", name:"The Beast Pocket Knife", desc:"Spring-assist folding knife with 440 stainless blade, safety liner lock and belt clip. 7.75 in long, 1 in wide, 0.5 lb. Seatbelt/line cutter, window breaker and bottle opener.",
    sheetFor:{"Rosewood":"knife-sheet-rosewood","Black Anodized Aluminum":"knife-sheet-black"},
-   colors:[["Black Anodized Aluminum","#262626","knife-black"]]},
+   colors:[["Black Anodized Aluminum","#262626","knife-black"],["Rosewood","#8a3a22","knife-rosewood"]]},
   {id:"box", group:"B", name:"Wood Memory Box", desc:"Medium, dark walnut, 8.5 x 6 x 3 in. Felt lined with a hinged lid.",
    more:["Memory box details","memorybox-sheet"], colors:[["Dark Walnut","#5a4636","memorybox"]]},
   {id:"tumbler", group:"B", name:"Engraved Tumbler (20 oz)", desc:"20 oz insulated stainless tumbler, no handle, with lid and straw, powder coated, laser engraved with the logo.",
@@ -193,7 +198,7 @@ var ITEMS = [
 var picks=[], sel={}, sz={};
 function cols(it){return it.sizes?it.sizes[sz[it.id]||0].colors:it.colors}
 function sizeLabel(it){return it.sizes?it.sizes[sz[it.id]||0].label:""}
-ITEMS.forEach(function(it){if(cols(it).length===1)sel[it.id]=0});
+ITEMS.forEach(function(it){var ok=[];cols(it).forEach(function(c,i){if(!isOut(it,c))ok.push(i)});if(ok.length===1)sel[it.id]=ok[0]});
 function pts(g){return g==="A"?2:1}
 function used(){return picks.reduce(function(s,p){return s+pts(p.group)},0)}
 function el(t,a,h){var e=document.createElement(t);if(a)for(var k in a){if(k==="class")e.className=a[k];else e.setAttribute(k,a[k])}if(h!=null)e.innerHTML=h;return e}
@@ -233,10 +238,10 @@ function card(it){
   var CC=cols(it);
   if(CC.length){
     var ci=sel[it.id];
-    b.appendChild(el("div",{"class":"colorlabel"},"Color: <b>"+(ci==null?"choose one":esc(CC[ci][0]))+"</b>"));
+    b.appendChild(el("div",{"class":"colorlabel"},"Color: <b>"+(ci==null?"choose one":esc(CC[ci][0])+(isOut(it,CC[ci])?" (out of stock)":""))+"</b>"));
     var sw=el("div",{"class":"swatches",role:"group","aria-label":it.name+" colors"});
     CC.forEach(function(col,i){
-      var s=el("button",{"class":"sw"+(col[3]==="holo"?" holo":""),type:"button",title:col[0],"aria-label":col[0],"aria-pressed":String(ci===i)});
+      var o=isOut(it,col);var s=el("button",{"class":"sw"+(col[3]==="holo"?" holo":"")+(o?" out":""),type:"button",title:col[0]+(o?" (out of stock)":""),"aria-label":col[0]+(o?" (out of stock)":""),"aria-pressed":String(ci===i)});
       s.style.background=col[1];
       s.onclick=function(){sel[it.id]=i;render()};
       sw.appendChild(s);
@@ -248,6 +253,7 @@ function card(it){
   var why="";
   if(need>left){add.disabled=true;why=left===0?"You've used both points.":"Needs 2 points; you have "+left+" left."}
   else if(CC.length&&sel[it.id]==null){add.disabled=true;why="Pick a color first."}
+  else if(CC.length&&isOut(it,CC[sel[it.id]])){add.disabled=true;why=CC[sel[it.id]][0]+" is out of stock for now. Please pick another color."}
   if(closed()){add.disabled=true;why="Ordering is closed."}
   add.onclick=function(){
     var ci=sel[it.id];
