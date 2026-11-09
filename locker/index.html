@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gear Locker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&display=swap">
+<style>
+/* Decision-maker builder: pick a tier, a format, the items; live estimate panel on the right; employee preview at the bottom. Same paper look as the other two demos. */
+:root{
+  --char:#231f1c; --walnut:#5b3a24; --kraft:#eadbc0; --shavings:#f7f1e6; --padauk:#b5532a;
+  --paper:#fffdf9; --line:#dccdb2; --muted:#6b5848; --ok:#3f6b33; --okbg:#e6efdc; --warnbg:#f6e7cf; --bad:#9b2c1a; --badbg:#f7dcd3; --focus:#2f6fd6;
+  --head:"Zilla Slab",Rockwell,Georgia,serif;
+  --body:"Segoe UI","Source Sans 3",system-ui,-apple-system,Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--shavings);color:var(--char);font-family:var(--body);font-size:16px;line-height:1.5;margin:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--head);text-wrap:balance;margin:0;line-height:1.1}
+
+.demo{background:var(--char);color:var(--shavings);font-size:14px}
+.demo .wrap{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding-block:10px}
+.demo b{color:#f0a37c;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+.demo label{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.demo input{background:#3a332e;border:1px solid #5a4f47;border-radius:6px;padding:6px 10px;color:var(--shavings);width:210px;max-width:100%}
+
+header.top{background:var(--kraft) repeating-linear-gradient(92deg,rgba(91,58,36,.05) 0 2px,transparent 2px 11px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;gap:18px;align-items:center;padding-block:22px}
+.clientlogo{flex:none;width:96px;height:96px;border-radius:12px;background:var(--paper);border:2px dashed #b9a684;display:grid;place-items:center;text-align:center;font-family:var(--head);font-weight:700;font-size:15px;line-height:1.1;color:var(--walnut);padding:8px;overflow:hidden;overflow-wrap:anywhere}
+@media (max-width:600px){.clientlogo{width:72px;height:72px;font-size:12px}}
+.who{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--walnut)}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;margin-top:4px}
+.makers{font-size:15px;color:var(--muted);margin-top:6px;max-width:70ch}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start;padding-block:14px 40px}
+@media (max-width:920px){.layout{grid-template-columns:minmax(0,1fr)}}
+.step{margin-top:22px}
+.step:first-child{margin-top:6px}
+.stephead{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.num{font-family:var(--head);font-weight:700;font-size:30px;color:var(--padauk);line-height:1}
+h2{font-size:28px;font-weight:700}
+.note{margin:0 0 12px;color:var(--muted);font-size:15px;max-width:72ch}
+
+.tiers{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.tier{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:12px;text-align:left;cursor:pointer;display:grid;gap:3px}
+.tier .p{font-family:var(--head);font-weight:700;font-size:28px;line-height:1}
+.tier .p small{font-family:var(--body);font-size:12px;font-weight:600;color:var(--muted)}
+.tier .n{font-weight:700;font-size:15px}
+.tier .d{font-size:13px;color:var(--muted);line-height:1.35}
+.tier[aria-pressed="true"]{border:2px solid var(--padauk);background:#fbefe6;padding:11px}
+
+.modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.mode{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:12px 14px;text-align:left;cursor:pointer;display:grid;gap:4px}
+.mode b{font-family:var(--head);font-size:20px}
+.mode span{font-size:14px;color:var(--muted);line-height:1.4}
+.mode[aria-pressed="true"]{border:2px solid var(--padauk);background:#fbefe6;padding:11px 13px}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
+.seg button{border:0;background:transparent;padding:6px 12px;font-size:14px;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--char);color:var(--shavings)}
+.chk{display:flex;gap:6px;align-items:center;font-size:14px}
+.ghost{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:7px 12px;font-size:14px;cursor:pointer}
+.ghost.strong{border-color:var(--padauk);color:var(--padauk);font-weight:700}
+
+.lineup{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:14px}
+.bin{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:8px;align-content:start}
+.bin h3{font-size:20px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.bin h3 small{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--shavings);border-radius:999px;padding:3px 4px 3px 10px;font-size:13px}
+.chip b{font-weight:700}
+.chip button{border:0;background:var(--paper);border-radius:50%;width:22px;height:22px;line-height:20px;padding:0;cursor:pointer;font-size:14px}
+.bin .empty{font-size:13px;color:var(--muted);margin:0}
+
+.cat{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.item{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.item.in{outline:3px solid var(--ok);outline-offset:-1px}
+.item.over .well{opacity:.55}
+.well{background:var(--kraft);aspect-ratio:4/3;position:relative}
+.well svg{width:100%;height:100%;display:block}
+.mk{position:absolute;top:8px;left:8px;font-size:11px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 6px}
+.m-sw{background:var(--char);color:var(--shavings)}
+.est{position:absolute;top:8px;right:8px;background:var(--paper);border:1px dashed var(--padauk);border-radius:5px;padding:1px 7px;font-weight:700;font-size:14px}
+.ib{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.ib h4{font-size:18px}
+.ib p{margin:0;font-size:13px;color:var(--muted);line-height:1.4}
+.fit{font-size:12px;font-weight:700}
+.fit.y{color:var(--ok)} .fit.n{color:var(--bad)}
+.acts{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
+.acts button{flex:1;border:1px solid var(--padauk);background:var(--paper);color:var(--padauk);border-radius:7px;padding:7px 8px;font-weight:700;font-size:14px;cursor:pointer;min-width:0}
+.acts button[aria-pressed="true"]{background:var(--padauk);color:#fff}
+
+.addons{display:grid;gap:8px}
+.addons label{display:flex;gap:10px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px;cursor:pointer}
+.addons input{margin-top:4px}
+.addons small{display:block;color:var(--muted);font-size:13px}
+
+aside.panel{position:sticky;top:12px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px}
+@media (max-width:920px){aside.panel{position:static}}
+.panel h3{font-size:26px}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:15px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.row span:first-child{color:var(--muted)}
+.row b{text-align:right}
+.pp{background:var(--warnbg);border:1px dashed var(--padauk);border-radius:8px;padding:12px 14px;display:grid;gap:2px}
+.pp .big{font-family:var(--head);font-size:34px;font-weight:700;line-height:1}
+.pp small{color:var(--muted);font-size:13px}
+.flag{border-radius:8px;padding:8px 10px;font-size:14px;margin:0}
+.flag.ok{background:var(--okbg)} .flag.bad{background:var(--badbg);color:#5e1a0e}
+label.f{display:block;font-weight:600;font-size:14px;margin:0 0 4px}
+input.txt{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--shavings)}
+.total{font-family:var(--head);font-size:26px;font-weight:700}
+.go{width:100%;border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px;background:var(--ok);color:#fff;cursor:pointer;text-align:center;text-decoration:none;display:block}
+.demonote{background:var(--warnbg);border-radius:8px;padding:10px 12px;font-size:13px;margin:0}
+.copied{font-size:13px;color:var(--ok);margin:0;min-height:18px}
+
+/* employee preview */
+.pv{border-top:1px solid var(--line);background:var(--char);padding-block:26px 40px}
+.pv .lead{color:var(--shavings);display:grid;gap:6px;margin-bottom:16px}
+.pv .lead h2{color:var(--shavings)}
+.pv .lead p{margin:0;color:#d9cbb6;max-width:72ch}
+.frame{background:var(--shavings);border-radius:14px;overflow:hidden;box-shadow:0 0 0 6px #3a332e}
+.frame .bar{background:#3a332e;color:#d9cbb6;font-size:12px;padding:6px 12px;display:flex;gap:8px;align-items:center}
+.frame .bar i{width:10px;height:10px;border-radius:50%;background:#5a4f47;display:inline-block}
+.frame .bar span{margin-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pin{padding:0 18px 22px}
+.pin header{background:var(--kraft) repeating-linear-gradient(92deg,rgba(91,58,36,.05) 0 2px,transparent 2px 11px);margin:0 -18px;padding:18px;display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--line)}
+.pin header .clientlogo{width:72px;height:72px;font-size:12px}
+.pin h3.pt{font-size:clamp(24px,4vw,34px)}
+.rule{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.rule span{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600}
+.deadline{margin:8px 0 0;padding:9px 12px;border-left:4px solid var(--padauk);background:var(--paper);font-size:15px}
+.playout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start;margin-top:10px}
+@media (max-width:860px){.playout{grid-template-columns:minmax(0,1fr)}}
+.pin h4.g{font-size:24px;margin:16px 0 2px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.pin h4.g small{font-family:var(--body);font-size:14px;font-weight:600;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card.chosen{outline:3px solid var(--ok);outline-offset:-1px}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.name{font-size:20px;font-weight:700}
+.tag{font-size:14px;font-style:italic;color:var(--walnut);margin:0}
+.desc{display:flex;flex-direction:column;gap:5px;font-size:14px;align-items:flex-start}
+.who2{font-size:11px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 6px;margin-top:2px;white-space:nowrap}
+.chlabel{font-size:13px;color:var(--muted)}
+.chlabel b{color:var(--char)}
+.swatches{display:flex;flex-wrap:wrap;gap:6px}
+.sw{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{border-color:var(--char);box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--char)}
+.txtb{border:1px solid var(--line);background:var(--shavings);border-radius:6px;padding:5px 10px;font-size:13px;font-weight:600;cursor:pointer}
+.txtb[aria-pressed="true"]{background:var(--char);color:var(--shavings);border-color:var(--char)}
+.add{margin-top:auto;border:0;border-radius:8px;padding:10px 12px;font-weight:700;background:var(--padauk);color:#fff;cursor:pointer}
+.add:disabled{background:#e9dfcf;color:var(--muted);cursor:not-allowed}
+.why{font-size:12px;color:var(--muted);min-height:16px;margin:0}
+.ppanel{position:sticky;top:12px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px}
+@media (max-width:860px){.ppanel{position:static}}
+.ppanel h5{font-family:var(--head);font-size:22px;margin:0}
+.slot{border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--shavings);display:flex;gap:10px;align-items:center}
+.slot.open{border-style:dashed;background:var(--paper)}
+.slot .thumb{width:52px;height:39px;flex:none;border-radius:5px;overflow:hidden;background:var(--kraft)}
+.slot .thumb svg{width:100%;height:100%;display:block}
+.slot .t{flex:1;min-width:0;font-size:14px;line-height:1.3}
+.slot .t b{display:block}
+.slot .t small{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.rm{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.submit{width:100%;border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px;background:var(--ok);color:#fff;cursor:pointer}
+.submit:disabled{background:#e9dfcf;color:var(--muted);cursor:not-allowed}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.done{background:var(--okbg);border-radius:8px;padding:12px;font-size:14px;display:grid;gap:6px}
+.done pre{white-space:pre-wrap;font-family:inherit;margin:0;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px}
+.noprice{font-size:13px;color:#d9cbb6;margin:12px 0 0}
+
+.how{border-top:1px solid var(--line);background:var(--paper)}
+.how .wrap{padding-block:26px 34px;display:grid;gap:14px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;background:var(--shavings);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:14px}
+.steps li::before{content:counter(s);font-family:var(--head);font-weight:700;font-size:22px;color:var(--padauk);display:block;line-height:1}
+.how a{color:var(--padauk);font-weight:700}
+footer{border-top:1px solid var(--line);background:var(--kraft)}
+footer .wrap{display:flex;gap:14px;align-items:center;padding-block:16px 24px;font-size:13px;color:var(--walnut);flex-wrap:wrap}
+footer img{width:64px;height:auto}
+.mbar{display:none}
+@media (max-width:920px){
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;gap:10px;align-items:center;justify-content:space-between;padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--paper);border-top:1px solid var(--line);font-size:14px}
+  .mbar a{background:var(--padauk);color:#fff;border-radius:8px;padding:8px 12px;font-weight:700;text-decoration:none}
+  body{padding-bottom:64px}
+}
+
+/* Gear Locker: prospect brand band, quick packages, send form */
+:root{--b1:#eadbc0;--b1ink:#231f1c;--b2:#b5532a}
+header.top{background:var(--b1);color:var(--b1ink)}
+header.top .who,header.top .makers{color:inherit;opacity:.9}
+.clientlogo{background:#fff}
+.clientlogo img{width:100%;height:100%;object-fit:contain;display:block}
+.clientlogo.dark{background:#1b1e26}
+header.top .clientlogo{background:var(--tile,#fff);width:240px;max-width:42vw;flex:none;height:96px;padding:12px 16px;border:0;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+header.top .clientlogo img{height:72px}
+.pin header .clientlogo img{height:56px}
+@media (max-width:600px){header.top .wrap{flex-direction:column;align-items:flex-start}header.top .clientlogo{width:220px;max-width:70vw;height:80px}header.top .clientlogo img{height:56px}}
+.mock{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px dashed currentColor;border-radius:999px;padding:3px 10px;opacity:.85}
+.brandbar{height:6px;background:linear-gradient(90deg,var(--b2) 0 33%,var(--b1) 33% 100%)}
+.quick{padding-top:22px}
+.quick h2{margin-bottom:4px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.qcard{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:14px;text-align:left;cursor:pointer;display:grid;gap:6px;border-top:5px solid var(--b2)}
+.qcard b{font-family:var(--head);font-size:22px}
+.qcard .qp{font-family:var(--head);font-size:30px;font-weight:700;line-height:1}
+.qcard .qp small{font-family:var(--body);font-size:12px;color:var(--muted)}
+.qcard span{font-size:14px;color:var(--muted);line-height:1.4}
+.qcard[aria-pressed="true"]{outline:3px solid var(--ok);outline-offset:-1px}
+.sendbox{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:600px){.f2{grid-template-columns:1fr}}
+textarea.txt{font:inherit;resize:vertical}
+.go:disabled{background:#e9dfcf;color:var(--muted);cursor:not-allowed}
+a.ghost.center{text-align:center;text-decoration:none;color:inherit}
+.pin header{background:var(--b1);color:var(--b1ink)}
+.pin header .who{color:inherit;opacity:.9}
+.pin header .clientlogo{background:var(--tile,#fff);width:180px;max-width:40vw;flex:none;height:72px;padding:8px 12px;border:0}
+</style>
+</head>
+<body>
+
+<div class="demo"><div class="wrap">
+  <b>Gear Locker</b>
+  <span id="demotxt">Sample page from Smoky Woods. All prices are estimates, not a quote.</span>
+  <label for="co" id="colabel">Try a company name: <input id="co" maxlength="28" value="Your Company" autocomplete="off"></label>
+</div></div>
+
+<header class="top" id="top"><div class="wrap">
+  <div class="clientlogo" id="clogo" aria-hidden="true">Your logo here</div>
+  <div style="min-width:0">
+    <div class="who" id="who">Your Company Gear Locker</div>
+    <h1>Build your team gift program</h1>
+    <div class="makers">Engraved drinkware, hardwood, leather and gear, made by hand at Smoky Woods with your logo on it. You set the budget and the choices, your people pick what they want, and you get one list and one invoice.</div>
+    <div class="mock" id="mock" hidden></div>
+  </div>
+</div></header>
+
+<main class="wrap">
+ <section class="quick" aria-labelledby="qh">
+   <h2 id="qh">Short on time? Pick a package</h2>
+   <p class="note">One click loads a complete program. You can still change anything below.</p>
+   <div class="qgrid" id="quick"></div>
+ </section>
+ <div class="layout">
+  <div>
+    <section class="step" aria-labelledby="s1">
+      <div class="stephead"><span class="num">1</span><h2 id="s1">Pick a budget per person</h2></div>
+      <p class="note">Each tier is about what the gift costs per person, logo engraving included. Pick one and we load a starter lineup you can change.</p>
+      <div class="tiers" id="tiers"></div>
+    </section>
+
+    <section class="step" aria-labelledby="s2">
+      <div class="stephead"><span class="num">2</span><h2 id="s2">Pick how your people choose</h2></div>
+      <div class="modes" id="modes"></div>
+    </section>
+
+    <section class="step" aria-labelledby="s3">
+      <div class="stephead"><span class="num">3</span><h2 id="s3">Pick the items</h2></div>
+      <p class="note" id="s3note"></p>
+      <div class="lineup" id="lineup"></div>
+      <div class="toolbar">
+        <label class="chk"><input type="checkbox" id="fitonly"> Only items that fit my tier</label>
+        <button class="ghost strong" type="button" id="suggest">Reset to our suggestion</button>
+      </div>
+      <div class="cat" id="cat"></div>
+    </section>
+
+    <section class="step" aria-labelledby="s4">
+      <div class="stephead"><span class="num">4</span><h2 id="s4">Shipping and extras</h2></div>
+      <p class="note">One price covers everything: the gift, logo engraving, packing and shipping. Pick where it ships and add any extras.</p>
+      <div class="addons" id="addons"></div>
+    </section>
+
+    <section class="step" id="send" aria-labelledby="s5">
+      <div class="stephead"><span class="num">5</span><h2 id="s5">Send us your plan</h2></div>
+      <p class="note">We'll reply with a real quote and a digital proof of your logo on the items. No commitment, and nothing is made until you approve.</p>
+      <div class="sendbox">
+        <div class="f2">
+          <div><label class="f" for="cn">Your name</label><input class="txt" id="cn" maxlength="60" autocomplete="name"></div>
+          <div><label class="f" for="ct">Title (optional)</label><input class="txt" id="ct" maxlength="60" autocomplete="organization-title"></div>
+          <div><label class="f" for="ce">Email</label><input class="txt" id="ce" type="email" maxlength="80" autocomplete="email"></div>
+          <div><label class="f" for="cp">Phone (optional)</label><input class="txt" id="cp" type="tel" maxlength="30" autocomplete="tel"></div>
+          <div><label class="f" for="cc">Company</label><input class="txt" id="cc" maxlength="60" autocomplete="organization"></div>
+          <div><label class="f" for="cd">When do you need it?</label><input class="txt" id="cd" maxlength="40" placeholder="e.g. before May 2027"></div>
+        </div>
+        <div><label class="f" for="cx">Anything else? (optional)</label><textarea class="txt" id="cx" rows="3" maxlength="500" placeholder="Event, colors, questions"></textarea></div>
+        <button class="go" type="button" id="sendbtn" disabled>Send my plan to Smoky Woods</button>
+        <p class="hint" id="sendhint">Enter your name, a valid email and your company.</p>
+        <div class="done" id="senddone" hidden></div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="panel" id="panel" aria-labelledby="ph">
+    <h3 id="ph">Your estimate</h3>
+    <div class="row"><span>Tier</span><b id="rtier"></b></div>
+    <div class="row"><span>Format</span><b id="rmode"></b></div>
+    <div class="row"><span>Items offered</span><b id="ritems"></b></div>
+    <div class="pp"><small>All-in price per person, up to</small><span class="big" id="rpp">$0</span><small id="rrange"></small></div>
+    <p class="flag" id="rflag"></p>
+    <div><label class="f" for="hc">How many people?</label><input class="txt" id="hc" type="number" min="1" max="5000" value="40" inputmode="numeric"></div>
+    <div class="row"><span>Estimated total</span><b class="total" id="rtotal">$0</b></div>
+    <a class="go" href="#send">Send this plan to us</a>
+    <a class="ghost center" href="#preview">See what your people will see</a>
+    <button class="ghost" type="button" id="copy">Copy this plan</button>
+    <button class="ghost" type="button" id="share">Copy a link to this plan</button>
+    <p class="copied" id="copied" aria-live="polite"></p>
+    <p class="demonote">Estimates only. The all-in price includes the gift, logo engraving, packing and shipping. Your real quote depends on your logo and quantities. Nothing is engraved until you approve a digital proof.</p>
+  </aside>
+ </div>
+</main>
+
+<section class="pv" id="preview" aria-labelledby="pvh"><div class="wrap">
+  <div class="lead">
+    <h2 id="pvh">This is what your people will see</h2>
+    <p>Live preview of the page we would set up for you, with your lineup from above. Try it: pick a gift, enter a name, and send. Change anything above and this updates.</p>
+  </div>
+  <div class="frame">
+    <div class="bar"><i></i><i></i><i></i><span id="purl">gift page for Your Company</span></div>
+    <div class="pin" id="pin"></div>
+  </div>
+  <p class="noprice">No prices on the employee page. Your people only see the gifts and their choices.</p>
+</div></section>
+
+<section class="how" aria-labelledby="hh"><div class="wrap">
+  <h2 id="hh">How a program runs</h2>
+  <ol class="steps">
+    <li>You build a lineup here and send it, or just call us with what you have in mind. We reply with a real quote per person.</li>
+    <li>You get a digital proof of your logo on each item. Nothing is engraved until you approve it.</li>
+    <li>We send you a private link to a page like the preview above. Your people pick by your deadline.</li>
+    <li>You get one list of who picked what, and one invoice. We make, pack and ship.</li>
+  </ol>
+</div></section>
+
+<footer><div class="wrap">
+  <img src="sw-badge.png" alt="Smoky Woods badge">
+  <span id="foot">Smoky Woods Gear Locker. Items, prices, shipping and dates on this page are estimates, not a quote.</span>
+</div></footer>
+
+<div class="mbar"><span id="mbart">$0 per person</span><a href="#panel">Estimate</a></div>
+
+<script>
+(function(){
+var WOODS=[["Walnut","#6b4630"],["Maple","#d9b98a"],["Cherry","#a0553a"]];
+var TUMB=[["Black","#1b1e26"],["White","#ecebf1"],["Navy","#2a3463"],["Blue","#173a96"],["Light Blue","#74b4ec"],["Teal","#5ccfe3"],["Green","#34503f"],["Maroon","#74162b"],["Red","#a3122a"],["Pink","#e660ab"],["Purple","#50388a"],["Yellow","#f3b51e"],["Orange","#e97f2e"]];
+var JRN=[["White","#e6e9e2"],["Metallic Gold","#d1b776"],["Rawhide","#c5722d"],["Navy","#35568a"],["Metallic Silver","#bcbcbe"],["Brown","#915435"],["Red","#8b3229"],["Gray","#737569"],["Pink","#c9556c"],["Black","#28292b"],["Sage","#52774c"]];
+var CAN=[["Black","#22231f"],["OD Green","#4a5232"]];
+var KNF=[["Rosewood","#6e2f22"],["Black aluminum","#2a2b2e"]];
+var co="Your Company";
+function mark(){var s=(P&&P.short)||co.trim()||"Your Company";return s.length>18?s.slice(0,17)+"…":s}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function dk(h,f){var n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;f=f||.6;return"rgb("+Math.round(r*f)+","+Math.round(g*f)+","+Math.round(b*f)+")"}
+function lum(h){var n=parseInt(h.slice(1),16);return((n>>16)*.3+(n>>8&255)*.59+(n&255)*.11)/255}
+function hi(c){return lum(c)>.6?"#7b4a2d":"#efe3cc"}
+function svg(inner){return '<svg viewBox="0 0 240 180" role="img" aria-hidden="true" focusable="false">'+inner+'</svg>'}
+function engr(x,y,txt,col,size){return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-family="Zilla Slab,Rockwell,Georgia,serif" font-weight="700" font-size="'+(size||12)+'" fill="'+col+'">'+esc(txt)+'</text>'}
+function tumbler(t,tall,handle){var top=tall?14:22,bot=tall?168:161;var s='<rect x="80" y="'+top+'" width="80" height="15" rx="5" fill="#2a2a2a"/><path d="M82 '+(top+15)+'h76l-9 '+(bot-top-15)+'h-58z" fill="'+t+'"/><path d="M91 '+(top+24)+'l6 '+(bot-top-34)+'" stroke="#fff" stroke-width="5" opacity=".18"/>';
+  if(handle)s='<path d="M156 60h18a12 12 0 0 1 12 12v40a12 12 0 0 1 -12 12h-22" stroke="'+dk(t,.8)+'" stroke-width="12" fill="none"/>'+s;
+  return svg(s+engr(120,(top+bot)/2+8,mark(),lum(t)>.75?"#9a9a9a":"#e9e6e0",12))}
+
+/* price = per-person estimate (USD), logo engraving included */
+var ITEMS=[
+ {id:"magnet",mk:"sw",name:"Logo Magnet",price:8,tag:"Holds up the lunch menu.",desc:"Laser-cut 3 mm hardwood magnet in the shape of your logo.",ch:[],
+  art:function(){var w="#a0553a";return svg('<circle cx="120" cy="90" r="64" fill="'+w+'"/><circle cx="120" cy="90" r="52" fill="#c27a55"/><circle cx="120" cy="90" r="40" fill="'+w+'"/>'+engr(120,95,mark(),"#fbe9d8",13))}},
+ {id:"keychain",mk:"sw",name:"Leather Keychain",price:8,tag:"Rides along everywhere.",desc:"Leather key tag with the logo engraved.",ch:[],
+  art:function(){return svg('<circle cx="58" cy="90" r="20" fill="none" stroke="#9aa0a6" stroke-width="6"/><rect x="74" y="58" width="120" height="64" rx="14" fill="#8a5a36"/><circle cx="92" cy="90" r="7" fill="#eadbc0"/><rect x="80" y="64" width="108" height="52" rx="10" fill="none" stroke="#c99a6e" stroke-width="1.5" stroke-dasharray="4 3"/>'+engr(144,95,mark(),"#3a2414",12))}},
+ {id:"ornament",mk:"sw",name:"Engraved Ornament",price:10,tag:"Goes on the tree every year after.",desc:"Round hardwood ornament with the logo and the year.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<path d="M120 10v34" stroke="#b5532a" stroke-width="3"/><circle cx="120" cy="40" r="6" fill="none" stroke="#9aa0a6" stroke-width="3"/><circle cx="120" cy="104" r="62" fill="'+w+'"/><circle cx="120" cy="104" r="52" fill="none" stroke="'+dk(w,.75)+'" stroke-width="1.5"/>'+engr(120,104,mark(),dk(w,.45),13)+engr(120,124,"2026",dk(w,.45),12))}},
+ {id:"opener",mk:"sw",name:"Bottle Opener",price:14,tag:"Opens at five o'clock sharp.",desc:"Hardwood bottle opener with a steel cap lifter, logo on the handle.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<g transform="rotate(-18 120 90)"><rect x="94" y="14" width="54" height="154" rx="24" fill="'+w+'"/><rect x="103" y="25" width="36" height="36" rx="6" fill="#9aa0a6"/><rect x="109" y="38" width="24" height="12" rx="4" fill="'+w+'"/><text x="121" y="120" transform="rotate(-90 121 120)" text-anchor="middle" font-family="Zilla Slab,Rockwell,Georgia,serif" font-weight="700" font-size="13" fill="'+dk(w,.5)+'">'+esc(mark())+'</text></g>')}},
+ {id:"stand",mk:"sw",name:"Phone Stand",price:16,tag:"Keeps the phone face up and out of the coffee.",desc:"Hardwood desk stand for a phone or small tablet, logo on the front.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<rect x="50" y="138" width="140" height="18" rx="4" fill="'+dk(w,.85)+'"/><path d="M78 138l40 -110h18l-34 110z" fill="'+w+'"/><rect x="122" y="26" width="46" height="88" rx="7" fill="#2c3036" transform="rotate(20 145 70)"/><rect x="60" y="118" width="96" height="22" rx="4" fill="'+w+'"/>'+engr(108,134,mark(),dk(w,.45),11))}},
+ {id:"journal",mk:"sw",name:"Leather Journal",price:22,tag:"Take notes. Eat the evidence.",desc:"Leather-feel journal, 8.75 x 5.5 in, 240 lined pages, refillable, logo engraved.",ch:[{k:"color",label:"Color",opts:JRN}],
+  art:function(o){var j=o.color[1];return svg('<rect x="70" y="18" width="104" height="146" rx="6" fill="'+j+'"/><rect x="150" y="18" width="9" height="146" fill="'+dk(j,.78)+'"/>'+engr(112,96,mark(),j==="#28292b"?"#cfcfcf":dk(j,.45),12))}},
+ {id:"coasters",mk:"sw",name:"Coaster Set",price:22,tag:"Saves the desk from the coffee.",desc:"Set of 4 hardwood coasters, each engraved with the logo.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1],s="";for(var i=3;i>=0;i--)s+='<ellipse cx="120" cy="'+(124-i*12)+'" rx="70" ry="26" fill="'+(i?dk(w,.8):w)+'"/>';
+   return svg(s+'<ellipse cx="120" cy="88" rx="70" ry="26" fill="'+w+'"/><ellipse cx="120" cy="88" rx="56" ry="19" fill="none" stroke="'+dk(w,.75)+'" stroke-width="1.5"/>'+engr(120,93,mark(),dk(w,.5),13))}},
+ {id:"nameplate",mk:"sw",name:"Desk Name Block",price:24,tag:"So the new folks learn names fast.",desc:"Solid hardwood desk block with the person's name and the logo.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<path d="M30 132l20 -60h140l20 60z" fill="'+w+'"/><rect x="30" y="132" width="180" height="14" fill="'+dk(w,.78)+'"/>'+engr(120,100,"Pat Morgan",dk(w,.42),17)+engr(120,120,mark(),dk(w,.5),10))}},
+ {id:"tumbler20",mk:"sw",name:"20 oz Tumbler",price:24,tag:"Hot coffee now, cold water in July.",desc:"20 oz insulated stainless tumbler with lid, logo laser engraved.",ch:[{k:"color",label:"Color",opts:TUMB}],
+  art:function(o){return tumbler(o.color[1])}},
+ {id:"knife",mk:"sw",name:"Pocket Knife",price:28,tag:"The one tool that never stays in the drawer.",desc:"Folding pocket knife with the logo engraved on the handle.",ch:[{k:"handle",label:"Handle",opts:KNF}],
+  art:function(o){var h=o.handle[1];return svg('<g transform="rotate(-12 120 90)"><path d="M120 76h86l-14 22h-72z" fill="#c6cbd0"/><path d="M120 78h80" stroke="#fff" stroke-width="2" opacity=".6"/><rect x="34" y="72" width="100" height="32" rx="14" fill="'+h+'"/><circle cx="124" cy="88" r="4" fill="#c6cbd0"/>'+engr(80,93,mark(),lum(h)<.2?"#d8d8d8":"#e9c9a8",11)+'</g>')}},
+ {id:"board-sm",mk:"sw",name:"Small Cutting Board",price:30,tag:"Cuts the cheese. Literally.",desc:"Hardwood cutting board, about 9 x 12 in, logo engraved, food-safe finish.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<rect x="44" y="26" width="152" height="128" rx="12" fill="'+w+'"/><circle cx="174" cy="48" r="8" fill="#eadbc0"/><path d="M56 60q60 -6 128 2M56 128q64 6 128 -2" stroke="'+dk(w,.82)+'" stroke-width="2" fill="none"/>'+engr(120,98,mark(),dk(w,.5),15))}},
+ {id:"tumbler30",mk:"sw",name:"30 oz Tumbler",price:32,tag:"For the long shift.",desc:"30 oz insulated stainless tumbler with lid, logo laser engraved.",ch:[{k:"color",label:"Color",opts:TUMB}],
+  art:function(o){return tumbler(o.color[1],true)}},
+ {id:"tumbler40",mk:"sw",name:"40 oz Tumbler with Handle",price:37,tag:"Holds a whole morning of coffee.",desc:"40 oz insulated tumbler with handle and straw lid, logo laser engraved.",ch:[{k:"color",label:"Color",opts:TUMB}],
+  art:function(o){return tumbler(o.color[1],true,true)}},
+ {id:"keepsake",mk:"sw",name:"Keepsake Box",price:40,tag:"Holds the important stuff. Or the cables.",desc:"Dark walnut keepsake box, 8.5 x 6 x 3 in, felt lined, logo on the lid.",ch:[],
+  art:function(){var w="#5a4636";return svg('<rect x="40" y="52" width="160" height="28" rx="3" fill="'+dk(w,.85)+'"/><rect x="46" y="80" width="148" height="76" rx="3" fill="'+w+'"/>'+engr(120,72,mark(),"#c9a985",14)+'<rect x="112" y="94" width="16" height="11" rx="2" fill="#c9a985"/><path d="M52 120h136" stroke="'+dk(w,.8)+'" stroke-width="2"/>')}},
+ {id:"paddle",mk:"sw",name:"Serving Board",price:45,tag:"Cheese, crackers, or just the remote.",desc:"Hardwood serving paddle, about 8 x 14 in, logo engraved, food-safe finish.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<rect x="24" y="46" width="160" height="92" rx="14" fill="'+w+'"/><rect x="180" y="78" width="42" height="28" rx="10" fill="'+w+'"/><circle cx="208" cy="92" r="5" fill="#eadbc0"/><path d="M36 66q60 -8 136 4M36 120q70 8 136 -2" stroke="'+dk(w,.82)+'" stroke-width="2" fill="none"/>'+engr(104,98,mark(),dk(w,.5),16))}},
+ {id:"sign",mk:"sw",name:"Layered Logo Sign",price:45,tag:"Your logo in 3D, for the office wall.",desc:"Laser-cut layered wood sign of your logo, stacked 3 mm layers, about 10 in wide.",ch:[],
+  art:function(){return svg('<rect x="38" y="34" width="164" height="112" rx="10" fill="#5b3a24"/><rect x="48" y="44" width="144" height="92" rx="8" fill="#d9b98a"/><path d="M60 120l30 -44 22 30 16 -20 42 34z" fill="#a0553a"/><path d="M60 120l30 -44 10 14" fill="#6b4630"/><circle cx="160" cy="66" r="12" fill="#b5532a"/>'+engr(120,132,mark(),"#3a2414",12))}},
+ {id:"ammo",mk:"sw",name:"Engraved Ammo Can",price:55,tag:"Field-tested storage for whatever.",desc:"Steel .50 cal ammo can with the logo engraved on the side.",ch:[{k:"color",label:"Color",opts:CAN}],
+  art:function(o){var c=o.color[1];return svg('<rect x="96" y="22" width="48" height="10" rx="5" fill="none" stroke="'+dk(c,.7)+'" stroke-width="5"/><rect x="40" y="38" width="160" height="20" rx="3" fill="'+dk(c,.85)+'"/><rect x="44" y="58" width="152" height="100" rx="3" fill="'+c+'"/><rect x="186" y="44" width="16" height="44" rx="3" fill="'+dk(c,.7)+'"/>'+engr(116,112,mark(),"#c9c4b8",15)+'<path d="M52 72h128M52 146h128" stroke="'+dk(c,.75)+'" stroke-width="2"/>')}},
+ {id:"memory",mk:"sw",name:"Large Memory Box",price:60,tag:"For the retirement cards and the good photos.",desc:"Large hardwood memory box, about 12 x 9 x 4 in, logo or a custom message on the lid.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<rect x="26" y="40" width="188" height="34" rx="4" fill="'+dk(w,.85)+'"/><rect x="32" y="74" width="176" height="88" rx="4" fill="'+w+'"/><rect x="40" y="46" width="160" height="22" rx="3" fill="none" stroke="'+dk(w,.65)+'" stroke-width="1.5"/>'+engr(120,62,mark(),"#f0dcc2",13)+'<path d="M40 118h160" stroke="'+dk(w,.8)+'" stroke-width="2"/><rect x="112" y="86" width="16" height="11" rx="2" fill="#c9a985"/>')}},
+ {id:"charcuterie",mk:"sw",name:"Charcuterie Board",price:70,tag:"The party shows up for this one.",desc:"Large hardwood charcuterie board, about 10 x 20 in, handles both ends, logo engraved.",ch:[{k:"wood",label:"Wood",opts:WOODS}],
+  art:function(o){var w=o.wood[1];return svg('<rect x="12" y="52" width="216" height="84" rx="16" fill="'+w+'"/><rect x="2" y="80" width="24" height="28" rx="8" fill="'+w+'"/><rect x="214" y="80" width="24" height="28" rx="8" fill="'+w+'"/><path d="M40 70l36 -2 -18 30z" fill="#f2c94c"/><circle cx="170" cy="76" r="7" fill="#6e3b66"/><circle cx="182" cy="84" r="7" fill="#6e3b66"/><circle cx="168" cy="90" r="7" fill="#6e3b66"/><rect x="150" y="104" width="44" height="14" rx="7" fill="#c98a44"/>'+engr(112,120,mark(),dk(w,.5),15))}},
+ {id:"endgrain",mk:"sw",name:"End Grain Cutting Board",price:100,tag:"Heirloom stuff. Handed down, not thrown out.",desc:"Thick end-grain butcher block, about 12 x 16 in, made by hand, logo engraved on the edge.",ch:[{k:"wood",label:"Wood",opts:[["Walnut and maple","#6b4630"],["Cherry and maple","#a0553a"]]}],
+  art:function(o){var w=o.wood[1],s='<rect x="40" y="30" width="160" height="110" rx="6" fill="#d9b98a"/>';for(var r=0;r<5;r++)for(var c=0;c<8;c++)if((r+c)%2)s+='<rect x="'+(40+c*20)+'" y="'+(30+r*22)+'" width="20" height="22" fill="'+w+'"/>';
+   return svg(s+'<rect x="40" y="140" width="160" height="16" fill="'+dk(w,.8)+'"/>'+engr(120,153,mark(),"#f0dcc2",11))}},
+
+ {id:"pen",mk:"sw",name:"Engraved Pen",price:12,tag:"Signs the big contracts.",desc:"Metal ballpoint pen with your logo laser engraved on the barrel.",ch:[{k:"color",label:"Color",opts:[["Black","#1b1e26"],["Navy","#2a3463"],["Gunmetal","#55585e"]]}],
+  art:function(o){var c=o.color[1];return svg('<g transform="rotate(-20 120 90)"><rect x="30" y="80" width="170" height="20" rx="10" fill="'+c+'"/><path d="M200 82l24 8 -24 8z" fill="#c6cbd0"/><rect x="44" y="72" width="60" height="6" rx="3" fill="#c6cbd0"/>'+engr(120,95,mark(),"#e9e6e0",11)+'</g>')}},
+ {id:"cardholder",mk:"sw",name:"Leather Card Holder",price:16,tag:"Business cards, finally organized.",desc:"Leather card holder with your logo engraved on the front.",ch:[{k:"color",label:"Leather",opts:[["Saddle","#8a5a36"],["Dark brown","#4a2f20"],["Black","#222"]]}],
+  art:function(o){var c=o.color[1];return svg('<rect x="56" y="40" width="128" height="100" rx="10" fill="'+c+'"/><rect x="64" y="48" width="112" height="84" rx="7" fill="none" stroke="#c99a6e" stroke-width="1.5" stroke-dasharray="4 3"/><path d="M56 70h128" stroke="'+dk(c,.7)+'" stroke-width="3"/>'+engr(120,108,mark(),"#e8cfae",13))}},
+ {id:"slate",mk:"sw",name:"Slate Coaster Set",price:26,tag:"Stone cold. On purpose.",desc:"Set of 4 natural slate coasters with your logo engraved.",ch:[],
+  art:function(){var s="";for(var i=3;i>=0;i--)s+='<rect x="'+(66-i*4)+'" y="'+(40+i*10)+'" width="108" height="100" rx="6" fill="'+(i?"#3b3f45":"#2b2e33")+'"/>';return svg(s+engr(120,96,mark(),"#c9ccd1",14))}}
+];
+var BY={};ITEMS.forEach(function(i){BY[i.id]=i});
+
+var TIERS=[
+ {p:20,n:"Thank-you",d:"An engraved pen or ornament plus a small add-on. Good for big teams."},
+ {p:35,n:"Desk drop",d:"A journal or coasters plus a pen or keychain."},
+ {p:50,n:"Team favorite",d:"An engraved tumbler, knife or board plus a desk piece."},
+ {p:75,n:"Above and beyond",d:"A big tumbler, keepsake box or logo sign plus a journal."},
+ {p:100,n:"Milestone",d:"Ammo can, memory box or charcuterie board plus a tumbler."},
+ {p:150,n:"Top shelf",d:"End grain board plus a keepsake. Retirements, big wins."}
+];
+var MODES=[
+ {id:"ab",n:"Pick 1 + 1",d:"Everyone picks one main gift (Group A) and one add-on (Group B)."},
+ {id:"one",n:"Pick one gift",d:"Everyone picks one gift from a short menu you choose."},
+ {id:"box",n:"Same box for everyone",d:"You choose the box. People only pick colors and options."}
+];
+/* starter lineups: AB = [Group A ids, Group B ids], ONE = menu, BOX = contents. Every lineup stays at or under its tier. */
+var PRESET={
+ 20:{ab:[["ornament","pen"],["magnet","keychain"]],one:["ornament","pen","opener","stand","cardholder","keychain"],box:["pen","keychain"]},
+ 35:{ab:[["journal","coasters","stand","opener"],["keychain","magnet","ornament","pen"]],one:["journal","coasters","nameplate","tumbler20","slate","knife","board-sm"],box:["journal","pen"]},
+ 50:{ab:[["tumbler20","journal","nameplate","knife","board-sm"],["opener","stand","cardholder","pen","keychain"]],one:["tumbler30","tumbler40","keepsake","paddle","sign"],box:["tumbler20","coasters"]},
+ 75:{ab:[["tumbler30","tumbler40","keepsake","paddle","sign"],["journal","coasters","nameplate","opener","cardholder"]],one:["ammo","memory","charcuterie","sign","paddle"],box:["paddle","tumbler20"]},
+ 100:{ab:[["sign","ammo","memory","charcuterie"],["tumbler20","journal","coasters","knife"]],one:["charcuterie","memory","ammo","endgrain"],box:["charcuterie","tumbler20"]},
+ 150:{ab:[["endgrain","charcuterie","memory","ammo"],["tumbler30","knife","tumbler40","keepsake"]],one:["endgrain","charcuterie","memory","ammo"],box:["endgrain","tumbler40","pen"]}
+};
+var QUICK=[
+ {n:"Good",t:35,m:"ab",d:"Journal, coasters or a desk stand, plus a pen or keychain. Everyone picks one of each."},
+ {n:"Better",t:50,m:"ab",d:"Engraved tumbler, knife or board, plus a desk piece. A solid middle-of-the-road pick."},
+ {n:"Best",t:100,m:"ab",d:"Ammo can, memory box or charcuterie board, plus a tumbler or journal."}
+];
+var SHIP={office:{n:"Ship to one office",d:"Everything arrives together at one address. You hand them out.",p:3},home:{n:"Ship to each person's home",d:"Each person gets their own box at their door. Good for remote teams.",p:12}};
+var ADDONS=[
+ {id:"name",n:"Each person's name engraved too",d:"Their name goes on the item along with your logo.",p:4},
+ {id:"gbox",n:"Gift box with your logo card",d:"Everything packed in one kraft gift box with a printed logo card.",p:4},
+ {id:"note",n:"Note card from leadership",d:"Your message printed on a card in every box.",p:2}
+];
+var S={ship:"office",tier:50,mode:"ab",A:[],B:[],one:[],box:[],add:{},hc:40,fit:false};
+function load(t){var p=PRESET[t];S.A=p.ab[0].slice();S.B=p.ab[1].slice();S.one=p.one.slice();S.box=p.box.slice()}
+function money(n){return"$"+Math.round(n).toLocaleString("en-US")}
+function el(t,a,h){var e=document.createElement(t);if(a)for(var k in a){if(k==="class")e.className=a[k];else e.setAttribute(k,a[k])}if(h!=null)e.innerHTML=h;return e}
+function pr(ids){return ids.map(function(i){return BY[i].price})}
+function mx(a){return a.length?Math.max.apply(null,a):0}
+function mn(a){return a.length?Math.min.apply(null,a):0}
+function sum(a){return a.reduce(function(x,y){return x+y},0)}
+function addonPP(){return sum(ADDONS.filter(function(a){return S.add[a.id]}).map(function(a){return a.p}))}
+function cost(){
+  var lo,hi;
+  if(S.mode==="ab"){hi=mx(pr(S.A))+mx(pr(S.B));lo=mn(pr(S.A))+mn(pr(S.B))}
+  else if(S.mode==="one"){hi=mx(pr(S.one));lo=mn(pr(S.one))}
+  else{hi=lo=sum(pr(S.box))}
+  var ad=addonPP(),sh=SHIP[S.ship].p;return{lo:lo,hi:hi,gift:hi,ad:ad,sh:sh,pp:hi+ad+sh}
+}
+function where(id){if(S.mode==="ab"){return S.A.indexOf(id)>=0?"A":S.B.indexOf(id)>=0?"B":null}var L=S[S.mode];return L.indexOf(id)>=0?"in":null}
+function fits(it){
+  if(S.mode==="ab"){var w=where(it.id),g=w||(it.mk==="sw"?"A":"B"),o=g==="A"?S.B:S.A,other=o.length?mx(pr(o)):(g==="A"?6:8);return it.price+other<=S.tier}
+  if(S.mode==="box"){var rest=sum(pr(S.box.filter(function(i){return i!==it.id})));return it.price+rest<=S.tier}
+  return it.price<=S.tier;
+}
+function toggle(id,g){
+  if(S.mode==="ab"){
+    var cur=where(id);S.A=S.A.filter(function(x){return x!==id});S.B=S.B.filter(function(x){return x!==id});
+    if(cur!==g)S[g].push(id);
+  }else{var L=S[S.mode],i=L.indexOf(id);if(i>=0)L.splice(i,1);else L.push(id)}
+  S.dirty=true;pv.reset();renderAll();
+}
+
+function renderTiers(){
+  var t=document.getElementById("tiers");t.innerHTML="";
+  TIERS.forEach(function(x){
+    var b=el("button",{"class":"tier",type:"button","aria-pressed":String(S.tier===x.p)},'<span class="p">'+money(x.p)+' <small>per person</small></span><span class="n">'+x.n+'</span><span class="d">'+x.d+'</span>');
+    b.onclick=function(){S.tier=x.p;load(x.p);S.dirty=false;pv.reset();renderAll()};t.appendChild(b);
+  });
+}
+function renderModes(){
+  var m=document.getElementById("modes");m.innerHTML="";
+  MODES.forEach(function(x){
+    var b=el("button",{"class":"mode",type:"button","aria-pressed":String(S.mode===x.id)},'<b>'+x.n+'</b><span>'+x.d+'</span>');
+    b.onclick=function(){S.mode=x.id;pv.reset();renderAll()};m.appendChild(b);
+  });
+}
+function chipList(ids){
+  if(!ids.length)return'<p class="empty">Nothing here yet. Add items from the list below.</p>';
+  return'<div class="chips">'+ids.map(function(id){return'<span class="chip">'+esc(BY[id].name)+' <b>'+money(BY[id].price)+'</b><button type="button" data-rm="'+id+'" aria-label="Remove '+esc(BY[id].name)+'">&times;</button></span>'}).join("")+'</div>';
+}
+function renderLineup(){
+  var n=document.getElementById("s3note"),L=document.getElementById("lineup");
+  if(S.mode==="ab"){
+    n.textContent="Put items in Group A or Group B. Each person picks one from each. Group A is usually the main gift and Group B a smaller add-on, but you can mix them however you like. 3 to 6 items per group works best.";
+    L.innerHTML='<div class="bin"><h3>Group A <small>'+S.A.length+' items, up to '+money(mx(pr(S.A)))+'</small></h3>'+chipList(S.A)+'</div><div class="bin"><h3>Group B <small>'+S.B.length+' items, up to '+money(mx(pr(S.B)))+'</small></h3>'+chipList(S.B)+'</div>';
+  }else if(S.mode==="one"){
+    n.textContent="Add the gifts people can choose from. Each person picks one. 4 to 8 choices works best.";
+    L.innerHTML='<div class="bin"><h3>Gift menu <small>'+S.one.length+' items, up to '+money(mx(pr(S.one)))+'</small></h3>'+chipList(S.one)+'</div>';
+  }else{
+    n.textContent="Add what goes in every box. People only choose colors and options (wood, colors, leather).";
+    L.innerHTML='<div class="bin"><h3>Every box gets <small>'+S.box.length+' items, '+money(sum(pr(S.box)))+' total</small></h3>'+chipList(S.box)+'</div>';
+  }
+  L.querySelectorAll("[data-rm]").forEach(function(b){b.onclick=function(){var id=b.getAttribute("data-rm");toggle(id,where(id))}});
+}
+function renderCat(){
+  var c=document.getElementById("cat");c.innerHTML="";
+  ITEMS.filter(function(it){return(!S.fit||fits(it)||where(it.id))}).forEach(function(it){
+    var w=where(it.id),ok=fits(it);
+    var card=el("article",{"class":"item"+(w?" in":"")+(ok?"":" over")});
+    var o={};it.ch.forEach(function(ch){o[ch.k]=ch.opts[0]});
+    var well=el("div",{"class":"well"},it.art(o));
+    well.appendChild(el("span",{"class":"est",title:"Demo estimate per person"},money(it.price)));
+    card.appendChild(well);
+    var b=el("div",{"class":"ib"});
+    b.appendChild(el("h4",null,esc(it.name)));
+    b.appendChild(el("p",null,esc(it.desc)+(it.ch.length?" Options: "+it.ch.map(function(ch){return ch.opts.length+" "+ch.label.toLowerCase()+(ch.opts.length>1?"s":"")}).join(", ")+".":"")));
+    b.appendChild(el("span",{"class":"fit "+(ok?"y":"n")},ok?"Fits your "+money(S.tier)+" tier":"Pushes you over "+money(S.tier)));
+    var acts=el("div",{"class":"acts"});
+    if(S.mode==="ab"){["A","B"].forEach(function(g){var x=el("button",{type:"button","aria-pressed":String(w===g)},(w===g?"In ":"Add to ")+g);x.onclick=function(){toggle(it.id,g)};acts.appendChild(x)})}
+    else{var x=el("button",{type:"button","aria-pressed":String(!!w)},w?(S.mode==="one"?"On the menu":"In the box"):(S.mode==="one"?"Add to menu":"Add to box"));x.onclick=function(){toggle(it.id,"in")};acts.appendChild(x)}
+    b.appendChild(acts);card.appendChild(b);c.appendChild(card);
+  });
+  if(!c.children.length)c.appendChild(el("p",{"class":"note"},"Nothing fits that filter. Turn off \"Only items that fit my tier\" or pick a higher tier."));
+}
+function renderAddons(){
+  var a=document.getElementById("addons");a.innerHTML="";
+  ["office","home"].forEach(function(k){var x=SHIP[k];var l=el("label",null,'<input type="radio" name="ship" '+(S.ship===k?"checked":"")+'><span><b>'+x.n+'</b> <span style="color:var(--padauk);font-weight:700">about '+money(x.p)+' per person, included</span><small>'+x.d+'</small></span>');l.querySelector("input").onchange=function(){S.ship=k;renderPanel();pv.render()};a.appendChild(l)});
+  ADDONS.forEach(function(x){
+    var l=el("label",null,'<input type="checkbox" '+(S.add[x.id]?"checked":"")+'><span><b>'+x.n+'</b> <span style="color:var(--padauk);font-weight:700">+'+money(x.p)+' per person</span><small>'+x.d+'</small></span>');
+    l.querySelector("input").onchange=function(){S.add[x.id]=this.checked;renderPanel();pv.render()};a.appendChild(l);
+  });
+}
+function count(){return S.mode==="ab"?S.A.length+S.B.length:S[S.mode].length}
+function ready(){return S.mode==="ab"?(S.A.length&&S.B.length):S[S.mode].length}
+function renderPanel(){
+  var c=cost(),t=TIERS.filter(function(x){return x.p===S.tier})[0];
+  document.getElementById("rtier").textContent=money(S.tier)+" "+t.n;
+  document.getElementById("rmode").textContent=MODES.filter(function(m){return m.id===S.mode})[0].n;
+  document.getElementById("ritems").textContent=count();
+  document.getElementById("rpp").textContent=money(c.pp);
+  var rr=S.mode==="box"?"Everyone gets the same box":"Cheapest choice "+money(c.lo+c.ad+c.sh)+", priciest "+money(c.pp)+". You pay one flat price.";
+  rr+=" Includes about "+money(c.sh)+" shipping"+(c.ad?" and "+money(c.ad)+" in extras":"")+".";
+  document.getElementById("rrange").textContent=ready()?rr:"Add items to see a price.";
+  var f=document.getElementById("rflag");
+  if(!ready()){f.className="flag bad";f.textContent=S.mode==="ab"?"Add at least one item to each group.":"Add at least one item."}
+  else if(c.gift<=S.tier){f.className="flag ok";f.textContent="The gift fits your "+money(S.tier)+" tier"+(c.gift<S.tier?", with "+money(S.tier-c.gift)+" to spare.":" exactly.")+" Shipping"+(c.ad?" and extras are":" is")+" included in the all-in price."}
+  else{f.className="flag bad";f.textContent="That's "+money(c.gift-S.tier)+" over your "+money(S.tier)+" tier. Drop the priciest item or move up a tier."}
+  var hc=Math.max(0,Math.min(5000,parseInt(document.getElementById("hc").value,10)||0));S.hc=hc;
+  document.getElementById("rtotal").textContent=money(c.pp*hc);
+  document.getElementById("mbart").textContent=money(c.pp)+" per person, "+money(c.pp*hc)+" total";
+}
+function planText(){
+  var c=cost(),L=[];
+  L.push("Gift program plan for "+(co.trim()||"Your Company")+" (demo estimate, not a quote)");
+  L.push("Tier: "+money(S.tier)+" per person");
+  L.push("Format: "+MODES.filter(function(m){return m.id===S.mode})[0].n);
+  function nm(ids){return ids.map(function(i){return BY[i].name+" ("+money(BY[i].price)+")"}).join(", ")||"none"}
+  if(S.mode==="ab"){L.push("Group A: "+nm(S.A));L.push("Group B: "+nm(S.B))}
+  else L.push((S.mode==="one"?"Gift menu: ":"Every box: ")+nm(S[S.mode]));
+  var ad=ADDONS.filter(function(a){return S.add[a.id]}).map(function(a){return a.n});if(ad.length)L.push("Extras: "+ad.join(", "));
+  L.push("Shipping: "+SHIP[S.ship].n+" (included)");
+  L.push("People: "+S.hc);
+  L.push("All-in estimate: "+money(c.pp)+" per person, "+money(c.pp*S.hc)+" total (gift, engraving, packing and shipping)");
+  return L.join("\n");
+}
+function shareUrl(){
+  var q=new URLSearchParams();if(P)q.set("p",P.slug);else if(co.trim()&&co.trim()!=="Your Company")q.set("co",co.trim());
+  q.set("t",S.tier);q.set("m",S.mode);q.set("a",S.A.join("."));q.set("b",S.B.join("."));q.set("one",S.one.join("."));q.set("box",S.box.join("."));q.set("hc",S.hc);q.set("s",S.ship);
+  var ad=Object.keys(S.add).filter(function(k){return S.add[k]});if(ad.length)q.set("x",ad.join("."));
+  return location.origin+location.pathname+"?"+q.toString();
+}
+function copy(txt,msg){
+  var done=function(){document.getElementById("copied").textContent=msg};
+  try{navigator.clipboard.writeText(txt).then(done,function(){fallback(txt);done()})}catch(e){fallback(txt);done()}
+}
+function fallback(txt){var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(t)}
+
+/* ---------- employee preview (no prices) ---------- */
+var pv=(function(){
+  var sel={},picks={},sent=null;
+  function opts(it){if(!sel[it.id]){sel[it.id]={};it.ch.forEach(function(ch){if(ch.opts.length===1)sel[it.id][ch.k]=0})}return sel[it.id]}
+  function cur(it){var s=opts(it),o={};it.ch.forEach(function(ch){var i=s[ch.k];o[ch.k]=ch.opts[i==null?0:i]});return o}
+  function miss(it){var s=opts(it);for(var i=0;i<it.ch.length;i++)if(s[it.ch[i].k]==null)return it.ch[i].label.toLowerCase();return null}
+  function groups(){
+    if(S.mode==="ab")return[{g:"A",t:"Group A",s:"pick one",ids:S.A},{g:"B",t:"Group B",s:"pick one",ids:S.B}];
+    if(S.mode==="one")return[{g:"one",t:"Gifts",s:"pick one",ids:S.one}];
+    return[{g:"box",t:"In your box",s:"choose your options",ids:S.box}];
+  }
+  function label(it){var o=cur(it);return it.name+(it.ch.length?" - "+it.ch.map(function(ch){return o[ch.k][0]}).join(", "):"")}
+  function card(it,g){
+    var isBox=g.g==="box",chosen=isBox||(picks[g.g]&&picks[g.g].id===it.id);
+    var c=el("article",{"class":"card"+(chosen&&!isBox?" chosen":"")});
+    c.appendChild(el("div",{"class":"well"},it.art(cur(it))));
+    var b=el("div",{"class":"body"});
+    b.appendChild(el("h4",{"class":"name"},esc(it.name)));
+    b.appendChild(el("p",{"class":"tag"},esc(it.tag)));
+    b.appendChild(el("div",{"class":"desc"},'<span>'+esc(it.desc)+'</span>'));
+    var s=opts(it);
+    it.ch.forEach(function(ch){
+      var ci=s[ch.k];
+      b.appendChild(el("div",{"class":"chlabel"},esc(ch.label)+": <b>"+(ci==null?"choose one":esc(ch.opts[ci][0]))+"</b>"));
+      if(ch.opts.length<2)return;
+      var row=el("div",{"class":"swatches",role:"group","aria-label":it.name+" "+ch.label});
+      ch.opts.forEach(function(op,i){
+        var x;
+        if(ch.type==="text")x=el("button",{"class":"txtb",type:"button","aria-pressed":String(ci===i)},esc(op[0]));
+        else{x=el("button",{"class":"sw",type:"button",title:op[0],"aria-label":op[0],"aria-pressed":String(ci===i)});x.style.background=op[1]}
+        x.onclick=function(){s[ch.k]=i;if(picks[g.g]&&picks[g.g].id===it.id)picks[g.g].label=label(it);sent=null;render()};
+        row.appendChild(x);
+      });
+      b.appendChild(row);
+    });
+    if(!isBox){
+      var m=miss(it),p=picks[g.g];
+      var add=el("button",{"class":"add",type:"button"},chosen?"Picked":(p?"Swap to this one":"Pick this one")),why="";
+      if(m){add.disabled=true;why="Pick the "+m+" first."}else if(chosen)why="This is your pick.";else if(p)why="Replaces your "+BY[p.id].name+".";
+      add.onclick=function(){picks[g.g]={id:it.id,label:label(it)};sent=null;render()};
+      b.appendChild(add);b.appendChild(el("p",{"class":"why"},why));
+    }
+    c.appendChild(b);return c;
+  }
+  function missingAll(){
+    var gs=groups();
+    if(S.mode==="box"){for(var i=0;i<S.box.length;i++){var m=miss(BY[S.box[i]]);if(m)return"Choose the "+m+" for the "+BY[S.box[i]].name+"."}return null}
+    for(var j=0;j<gs.length;j++)if(!picks[gs[j].g])return"Pick one from "+gs[j].t+".";
+    return null;
+  }
+  function render(){
+    var root=document.getElementById("pin"),name=co.trim()||"Your Company";
+    document.getElementById("purl").textContent="private gift page for "+name;
+    var fn=root.querySelector("#pfn"),ln=root.querySelector("#pln"),fv=fn?fn.value:"",lv=ln?ln.value:"";
+    root.innerHTML="";
+    var gs=groups();
+    var title=S.mode==="ab"?"Pick your thank-you gift":S.mode==="one"?"Pick your thank-you gift":"Your thank-you box";
+    var h=el("header");
+    h.appendChild(el("div",{"class":"clientlogo"+(P&&P.logoBg==="dark"?" dark":""),"aria-hidden":"true"},logoHtml(name)));
+    h.appendChild(el("div",{style:"min-width:0"},'<div class="who">'+esc(name)+' thank-you gifts</div><h3 class="pt">'+title+'</h3>'));
+    root.appendChild(h);
+    var rules=S.mode==="ab"?["1 pick from Group A","1 pick from Group B"]:S.mode==="one"?["Pick 1 gift"]:["Choose your colors and options"];
+    if(S.add.name)rules.push("Your name engraved on it");
+    if(S.add.gbox)rules.push("Arrives in a gift box");
+    if(S.ship==="home")rules.push("Ships to your home");
+    root.appendChild(el("div",{"class":"rule"},rules.map(function(r){return"<span>"+esc(r)+"</span>"}).join("")));
+    root.appendChild(el("p",{"class":"deadline"},'Picks close <b>Friday, December 4 at 11:59 PM Eastern</b> <span style="color:var(--muted)">(example date)</span>.'));
+    var lay=el("div",{"class":"playout"}),cat=el("div");
+    if(!ready())cat.appendChild(el("p",{"class":"hint",style:"margin-top:14px"},"Add items in step 3 to fill this page."));
+    gs.forEach(function(g){
+      if(!g.ids.length)return;
+      cat.appendChild(el("h4",{"class":"g"},g.t+"<small>"+g.s+"</small>"));
+      var grid=el("div",{"class":"grid"});g.ids.forEach(function(id){grid.appendChild(card(BY[id],g))});cat.appendChild(grid);
+    });
+    lay.appendChild(cat);
+    var pn=el("aside",{"class":"ppanel"});
+    pn.appendChild(el("h5",null,S.mode==="box"?"Your box":"Your picks"));
+    var slots=el("div",{style:"display:grid;gap:8px"});
+    if(S.mode==="box"){S.box.forEach(function(id){var it=BY[id];var sl=el("div",{"class":"slot"});sl.appendChild(el("div",{"class":"thumb"},it.art(cur(it))));sl.appendChild(el("div",{"class":"t"},"<b>"+esc(it.name)+"</b>"+(miss(it)?"Choose the "+esc(miss(it)):esc(label(it).split(" - ")[1]||""))));slots.appendChild(sl)})}
+    else gs.forEach(function(g){var p=picks[g.g],sl=el("div",{"class":"slot"+(p?"":" open")});
+      if(p){var it=BY[p.id];sl.appendChild(el("div",{"class":"thumb"},it.art(cur(it))));sl.appendChild(el("div",{"class":"t"},"<small>"+g.t+"</small><b>"+esc(it.name)+"</b>"+esc(p.label.split(" - ")[1]||"")));var r=el("button",{"class":"rm",type:"button"},"Remove");r.onclick=function(){picks[g.g]=null;sent=null;render()};sl.appendChild(r)}
+      else sl.appendChild(el("div",{"class":"t"},"<small>"+g.t+"</small>Not picked yet."));
+      slots.appendChild(sl)});
+    pn.appendChild(slots);
+    pn.appendChild(el("div",{"class":"names"},'<div><label class="f" for="pfn">First name</label><input class="txt" id="pfn" maxlength="40" placeholder="e.g. Pat" autocomplete="off"></div><div><label class="f" for="pln">Last name</label><input class="txt" id="pln" maxlength="40" placeholder="e.g. Morgan" autocomplete="off"></div>'));
+    var sb=el("button",{"class":"submit",type:"button"},"Send my picks"),hint=el("p",{"class":"hint"});
+    pn.appendChild(sb);pn.appendChild(hint);
+    var done=el("div",{"class":"done"});done.hidden=!sent;
+    if(sent)done.innerHTML='<span><b>Got it.</b> In a live program this goes to your coordinator\'s list. Nothing is saved in this preview.</span><pre>'+esc(sent)+'</pre>';
+    pn.appendChild(done);
+    lay.appendChild(pn);root.appendChild(lay);
+    var fi=root.querySelector("#pfn"),li=root.querySelector("#pln");fi.value=fv;li.value=lv;
+    function letters(s){return(s.match(/[A-Za-zÀ-ɏ]/g)||[]).length}
+    function upd(){var m=ready()?missingAll():"Add items in step 3 first.",nOk=letters(fi.value)>=2&&letters(li.value)>=2;sb.disabled=!!m||!nOk;hint.textContent=m||(nOk?"Ready when you are.":"Enter a first and last name (at least 2 letters each).")}
+    fi.oninput=upd;li.oninput=upd;upd();
+    sb.onclick=function(){if(sb.disabled)return;var L=["Name: "+fi.value.trim()+" "+li.value.trim()];
+      if(S.mode==="box")S.box.forEach(function(id){L.push(label(BY[id]))});else gs.forEach(function(g){L.push(g.t+": "+picks[g.g].label)});
+      sent=L.join("\n");render()};
+  }
+  return{render:render,reset:function(){picks={};sent=null}};
+})();
+
+function renderAll(){renderQuick();renderTiers();renderModes();renderLineup();renderCat();renderAddons();renderPanel();pv.render();updSend()}
+document.getElementById("fitonly").onchange=function(){S.fit=this.checked;renderCat()};
+document.getElementById("suggest").onclick=function(){load(S.tier);pv.reset();renderAll()};
+document.getElementById("hc").addEventListener("input",renderPanel);
+document.getElementById("copy").onclick=function(){copy(planText(),"Plan copied. Paste it into an email to us.")};
+document.getElementById("share").onclick=function(){copy(shareUrl(),"Link copied. It opens this page with your plan loaded.")};
+
+var P=null; /* prospect config, loaded from p/<slug>.js */
+function logoHtml(name){if(P&&P.logo)return'<img src="p/'+esc(P.logo)+'" alt="'+esc(P.name)+' logo">';return name!=="Your Company"?esc(name):"Your logo here"}
+function ink(h){return lum(h)>.55?"#1b1e26":"#ffffff"}
+function setCo(v){co=v;var s=v.trim()||"Your Company";document.getElementById("who").textContent=s+" Gear Locker";
+  var cl=document.getElementById("clogo");cl.innerHTML=logoHtml(s);cl.className="clientlogo"+(P&&P.logoBg==="dark"?" dark":"");
+  var cc=document.getElementById("cc");if(cc&&!cc.dataset.touched)cc.value=s==="Your Company"?"":s;
+  renderCat();pv.render()}
+function renderQuick(){var q=document.getElementById("quick");q.innerHTML="";QUICK.forEach(function(x){var on=S.tier===x.t&&S.mode===x.m&&!S.dirty;var b=el("button",{"class":"qcard",type:"button","aria-pressed":String(on)},'<b>'+x.n+'</b><span class="qp">'+money(x.t)+' <small>per person gift</small></span><span>'+x.d+'</span>');b.onclick=function(){S.tier=x.t;S.mode=x.m;load(x.t);S.dirty=false;pv.reset();renderAll();document.getElementById("s3").scrollIntoView({behavior:"smooth"})};q.appendChild(b)})}
+/* send plan: Microsoft Form prefill. Tokens: XCOX company, XNAMEX name+title, XEMAILX, XPHONEX, XWHENX, XPLANX, XNOTESX */
+var FORM_LINK="";
+function val(id){return document.getElementById(id).value.trim()}
+function sendOk(){return val("cn").length>=2&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val("ce"))&&val("cc").length>=2&&ready()}
+function updSend(){var b=document.getElementById("sendbtn"),h=document.getElementById("sendhint");b.disabled=!sendOk();h.textContent=!ready()?"Add items in step 3 first.":b.disabled?"Enter your name, a valid email and your company.":(FORM_LINK?"Opens a short form with your plan filled in. Press Submit there and it comes straight to us.":"Ready.")}
+var coIn=document.getElementById("co");
+["cn","ct","ce","cp","cc","cd","cx"].forEach(function(id){document.getElementById(id).addEventListener("input",function(){if(id==="cc")this.dataset.touched="1";updSend()})});
+document.getElementById("sendbtn").onclick=function(){
+  if(!sendOk())return;var c=cost();
+  var plan=planText().split("\n").slice(1).join("\n");
+  var who=val("cn")+(val("ct")?", "+val("ct"):"");
+  var d=document.getElementById("senddone");d.hidden=false;
+  if(FORM_LINK){
+    var u=FORM_LINK.replace("XCOX",encodeURIComponent(val("cc"))).replace("XNAMEX",encodeURIComponent(who)).replace("XEMAILX",encodeURIComponent(val("ce"))).replace("XPHONEX",encodeURIComponent(val("cp")||"-")).replace("XWHENX",encodeURIComponent(val("cd")||"-")).replace("XPLANX",encodeURIComponent(plan)).replace("XNOTESX",encodeURIComponent(val("cx")||"-"));
+    window.open(u,"_blank","noopener");
+    d.innerHTML='<span><b>Almost done.</b> A form opened in a new tab with your plan filled in. Press <b>Submit</b> there and it comes straight to us. We reply within one business day.</span>';
+  }else{
+    copy(planText()+"\nContact: "+who+", "+val("ce")+(val("cp")?", "+val("cp"):"")+"\nNeeded by: "+(val("cd")||"-")+"\nNotes: "+(val("cx")||"-"),"Plan copied.");
+    d.innerHTML='<span><b>Preview mode.</b> Sending is not switched on in this sample yet. Your plan was copied so you can paste it into an email to us.</span>';
+  }
+};
+function boot(){
+  if(P){
+    co=P.name;coIn.value=P.name;
+    var r=document.documentElement.style;r.setProperty("--b1",P.c1);r.setProperty("--b1ink",ink(P.c1));r.setProperty("--b2",P.c2||P.c1);r.setProperty("--tile",P.tile||"#fff");
+    var m=document.getElementById("mock");m.hidden=false;m.textContent="Sample made for "+P.name+" by Smoky Woods";
+    document.getElementById("colabel").hidden=true;
+    document.getElementById("demotxt").textContent="A sample program we put together for "+P.name+". All prices are estimates, not a quote.";
+    document.title=P.name+" Gear Locker";
+  }
+  load(S.tier);
+  try{
+    var q=new URLSearchParams(location.search);
+    if(!P&&q.get("co"))coIn.value=q.get("co").slice(0,28);
+    var t=parseInt(q.get("t"),10);if(PRESET[t]){S.tier=t;load(t)}
+    if(["ab","one","box"].indexOf(q.get("m"))>=0)S.mode=q.get("m");
+    function ids(k){var v=q.get(k);return v==null?null:v.split(".").filter(function(i){return BY[i]})}
+    if(ids("a"))S.A=ids("a");if(ids("b"))S.B=ids("b");if(ids("one"))S.one=ids("one");if(ids("box"))S.box=ids("box");
+    var hc=parseInt(q.get("hc"),10);if(hc>0)document.getElementById("hc").value=Math.min(5000,hc);
+    if(SHIP[q.get("s")])S.ship=q.get("s");
+    (q.get("x")||"").split(".").forEach(function(k){if(k)S.add[k]=true});
+  }catch(e){}
+  coIn.addEventListener("input",function(){setCo(coIn.value)});
+  co=coIn.value;renderAll();setCo(coIn.value);
+}
+var slug=null;try{slug=new URLSearchParams(location.search).get("p")}catch(e){}
+if(slug&&/^[a-z0-9-]{3,60}$/.test(slug)){
+  var sc=document.createElement("script");sc.src="p/"+slug+".js";
+  sc.onload=function(){P=window.GL_PROSPECT||null;if(P)P.slug=slug;boot()};sc.onerror=function(){boot()};
+  document.head.appendChild(sc);
+}else boot();
+})();
+</script>
+
+</body>
+</html>
