@@ -709,7 +709,7 @@ function setCo(v){co=v;var s=v.trim()||"Your Company";document.getElementById("w
   renderCat();pv.render()}
 function renderQuick(){var q=document.getElementById("quick");q.innerHTML="";QUICK.forEach(function(x){var on=S.tier===x.t&&S.mode===x.m&&!S.dirty;var b=el("button",{"class":"qcard",type:"button","aria-pressed":String(on)},'<b>'+x.n+'</b><span class="qp">'+money(x.t)+' <small>per person gift</small></span><span>'+x.d+'</span>');b.onclick=function(){S.tier=x.t;S.mode=x.m;load(x.t);S.dirty=false;pv.reset();renderAll();document.getElementById("s3").scrollIntoView({behavior:"smooth"})};q.appendChild(b)})}
 /* send plan: Microsoft Form prefill. Tokens: XCOX company, XNAMEX name+title, XEMAILX, XPHONEX, XWHENX, XPLANX, XNOTESX */
-var FORM_LINK="";
+var FORM_LINK="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=yDXNE1vG502s01x4u9eyhdayn6jzYrNIqABTYGgFyDZURUJZWlcyS004RENZNE9TUjhFVkRWVjZIUy4u&r2a7e39617eea4b09b570c1d027b5465f=XCOX&r95502bb5c05f43d996a6a4b4d01ea8f2=XNAMEX&r06f0dc77baad4c27b4cce283f473e875=XEMAILX&r09f8a49114c24f71803fa6f53c0a6582=XPHONEX&rc323a0744a214d289daa10465d5c1f40=XWHENX&r6343df5379c64ae983df563439cb84ce=XPLANX&r1702ccfe70c940948d2ce329b90b08d7=XNOTESX";
 function val(id){return document.getElementById(id).value.trim()}
 function sendOk(){return val("cn").length>=2&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val("ce"))&&val("cc").length>=2&&ready()}
 function updSend(){var b=document.getElementById("sendbtn"),h=document.getElementById("sendhint");b.disabled=!sendOk();h.textContent=!ready()?"Add items in step 3 first.":b.disabled?"Enter your name, a valid email and your company.":(FORM_LINK?"Opens a short form with your plan filled in. Press Submit there and it comes straight to us.":"Ready.")}
