@@ -174,8 +174,8 @@ var DEADLINE = new Date("2026-11-22T23:59:59-05:00"); // set when Jim picks the 
 var DEADLINE_TEXT = "Sunday, November 22 at 11:59 PM Eastern"; // e.g. "Saturday, December 5 at 11:59 PM Eastern"
 function closed(){return !!DEADLINE&&Date.now()>DEADLINE.getTime()}
 // Colors short at Makerflo: still orderable, flagged with a note. Remove a name when stock is back.
-// (Engraved tumbler Black and White are NOT listed: FastSub is the backup source.)
-var LIMITED = {knife:["Rosewood"], tumbler:["Blue","Green","Red"], journal:["8 Red"]};
+// Follows Makerflo status (Jim 2026-11-10), including Black and White even though FastSub is a backup.
+var LIMITED = {knife:["Rosewood"], tumbler:["Black","White","Blue","Green","Red"], journal:["8 Red"]};
 var LIMITED_NOTE = "Limited stock: this color may arrive later than everything else.";
 function isLtd(it,c){return !!(c&&LIMITED[it.id]&&LIMITED[it.id].indexOf(c[0])>-1)}
 var IMG = "img/";
