@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Gear Locker</title>
+<link rel="icon" type="image/svg+xml" href="../brand/gear-locker-icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../brand/gear-locker-icon-32.png">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,6 +187,10 @@ input.txt{width:100%;padding:10px 12px;border:1px solid var(--line);border-radiu
 .steps li{counter-increment:s;background:var(--shavings);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:14px}
 .steps li::before{content:counter(s);font-family:var(--head);font-weight:700;font-size:22px;color:var(--padauk);display:block;line-height:1}
 .how a{color:var(--padauk);font-weight:700}
+.glbrand{background:var(--paper);border-bottom:1px solid var(--line)}
+.glbrand .wrap{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:center;padding-block:12px}
+.glbrand object,.glbrand img{display:block;width:230px;max-width:60vw;height:auto;aspect-ratio:304/150}
+.glbrand span{color:var(--muted);font-size:14px}
 footer{border-top:1px solid var(--line);background:var(--kraft)}
 footer .wrap{display:flex;gap:14px;align-items:center;padding-block:16px 24px;font-size:13px;color:var(--walnut);flex-wrap:wrap}
 footer img{width:64px;height:auto}
@@ -229,6 +235,11 @@ a.ghost.center{text-align:center;text-decoration:none;color:inherit}
 </style>
 </head>
 <body>
+
+<div class="glbrand"><div class="wrap">
+  <object type="image/svg+xml" data="../brand/gear-locker-stamp-animated.svg" aria-label="Gear Locker logo" role="img"><img src="../brand/gear-locker-stamp.svg" alt="Gear Locker&trade; logo, custom-engraved team gear"></object>
+  <span>A private gift-picking page for your team, made by Smoky Woods in Madisonville, Tennessee.</span>
+</div></div>
 
 <div class="demo"><div class="wrap">
   <b>Gear Locker</b>
